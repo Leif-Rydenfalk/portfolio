@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+html,
+body {
+	@apply overscroll-x-none overflow-x-hidden;
+
+	@apply bg-slate-50;
+	@apply select-none;
+
+	color: black;
+
+	font-kerning: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+
+	font-optical-sizing: auto;
+	font-weight: 200;
+	font-style: normal;
+}
+
+.char,
+.input,
+.text,
+html,
+body {
+	font-family: 'Sniglet', system-ui;
+	font-style: normal;
+}
+
+.ease-spring {
+	transition-timing-function: linear(
+		0,
+		0.002,
+		0.0076 1.01%,
+		0.0176,
+		0.0313 2.1%,
+		0.0699 3.23%,
+		0.126 4.48%,
+		0.1808 5.53%,
+		0.2509 6.75%,
+		0.5362 11.32%,
+		0.66 13.41%,
+		0.7751 15.59%,
+		0.8676 17.65%,
+		0.9083,
+		0.9447,
+		0.9767,
+		1.0045 21.84%,
+		1.029,
+		1.0494 24.02%,
+		1.0664,
+		1.0796 26.28%,
+		1.0917 27.79%,
+		1.0987 29.38%,
+		1.1007 31.1%,
+		1.0976 32.99%,
+		1.092 34.54%,
+		1.0835 36.26%,
+		1.0365 43.93%,
+		1.0162 47.87%,
+		1.0008 52.27%,
+		0.9922 56.96%,
+		0.99 63.17%,
+		0.9997 82.53%,
+		1.0007 99.97%
+	);
+}
+
+/* For Webkit-based browsers (Chrome, Safari and Opera) */
+.scrollbar-hide::-webkit-scrollbar {
+	display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
+img {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	-moz-user-drag: none;
+	-o-user-drag: none;
+	user-drag: none;
+
+	pointer-events: none;
+}
