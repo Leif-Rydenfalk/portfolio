@@ -197,7 +197,7 @@
 				"Docker",
 				"GitHub Actions",
 			],
-			link: "https://github.com/Leif-Rydenfalk/rheo",
+			link: "https://rheo.se",
 			imageUrl: "./rheo_hero_16_9.webp",
 			metrics: [
 				"4,200+ listings created; 1,850 completed sales",
