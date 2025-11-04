@@ -3,6 +3,12 @@ name = "adamec"
 compatibility_date = "2025-01-27"
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
+[build]
+command = "npm run build"
+
+[build.upload]
+format = "service-worker"
+
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Pages Function, running it closer to your back-end infrastructure
 # rather than the end user may result in better performance.
