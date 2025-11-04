@@ -200,9 +200,7 @@
 			link: "https://rheo.se",
 			imageUrl: "./rheo_hero_16_9.webp",
 			metrics: [
-				"4,200+ listings created; 1,850 completed sales",
 				"p95 server response: 78ms (Rust, 256MB container)",
-				"Month-over-month GMV growth: 27% (last 3 months)",
 				"Zero-downtime deployments via blue-green strategy",
 			],
 		},
