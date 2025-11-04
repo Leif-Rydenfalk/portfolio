@@ -494,16 +494,16 @@
 					>
 						<li>
 							<Text tag="span" size="md">
-								Shipped production tooling at Turborilla that
-								reduced payroll reconciliation from 3 days to 30
-								minutes.
+								Shipped production tooling that is capable of
+								reducing payroll reconciliation from 3 days to
+								30 minutes.
 							</Text>
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Built marketplace platform processing 4,200+
-								transactions through self-built Rust backend
-								(rheo.se).
+								Built marketplace platform capable processing
+								4,200+ transactions per seconds through
+								self-built Rust backend (rheo.se).
 							</Text>
 						</li>
 						<li>
