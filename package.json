@@ -28,6 +28,7 @@
 		"wrangler": "^3.84.0"
 	},
 	"dependencies": {
+		"lucide-svelte": "^0.552.0",
 		"motion": "^10.18.0"
 	}
 }

@@ -1,534 +1,411 @@
 <script lang="ts">
-// Import necessary components and functions
-import Project from '$lib/Project.svelte';
-import TitleCard from '$lib/TitleCard.svelte';
-import { onMount } from 'svelte';
-import { appState, scrollToSection } from '$lib/util';
-import Text, { type TextColor } from '$lib/Text.svelte'; // Import TextColor type
-import Button from '$lib/Button.svelte';
-import Show from '$lib/Show.svelte';
+	// Import necessary components and functions
+	import Project from "$lib/Project.svelte";
+	import TitleCard from "$lib/TitleCard.svelte";
+	import { onMount } from "svelte";
+	import { appState, scrollToSection } from "$lib/util";
+	import Text, { type TextColor } from "$lib/Text.svelte";
+	import Button from "$lib/Button.svelte";
+	import Show from "$lib/Show.svelte";
 
-// --- STATE ---
-let currentYear = 0;
+	// --- STATE ---
+	let currentYear = 0;
 
-onMount(() => {
-	currentYear = new Date().getFullYear();
+	onMount(() => {
+		currentYear = new Date().getFullYear();
 
-	// --- Intersection Observer Setup ---
-
-	// Select all section elements that have the 'data-section-name' attribute
-	const sections = document.querySelectorAll<HTMLElement>(
-		'[data-section-name]'
-	);
-
-	if (sections.length === 0) {
-		console.warn(
-			'IntersectionObserver: No sections found with [data-section-name] attribute.'
+		const sections = document.querySelectorAll<HTMLElement>(
+			"[data-section-name]",
 		);
-		// Initialize with a default if needed, e.g., 'Home' if the first section might not intersect initially
-		appState.update((state) => ({ ...state, currentVisibleSection: 'Home' }));
-		return; // No sections to observe
-	}
 
-	// Callback function executed when intersection changes
-	const observerCallback = (entries: IntersectionObserverEntry[]) => {
-		let latestIntersectingSectionName: string | null = null;
+		if (sections.length === 0) {
+			console.warn(
+				"IntersectionObserver: No sections found with [data-section-name] attribute.",
+			);
+			appState.update((state) => ({
+				...state,
+				currentVisibleSection: "Home",
+			}));
+			return;
+		}
 
-		entries.forEach((entry) => {
-			// Check if the section is intersecting according to the threshold
-			if (entry.isIntersecting) {
-				const name = entry.target.getAttribute('data-section-name');
-				if (name) {
-					// Store the name of the latest section that became intersecting
-					// In a batch of entries, the last one intersecting is often the most relevant
-					// if multiple cross the threshold simultaneously.
-					latestIntersectingSectionName = name;
+		const observerCallback = (entries: IntersectionObserverEntry[]) => {
+			let latestIntersectingSectionName: string | null = null;
+
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					const name = entry.target.getAttribute("data-section-name");
+					if (name) {
+						latestIntersectingSectionName = name;
+					}
 				}
+			});
+
+			if (latestIntersectingSectionName) {
+				appState.update((state) => {
+					if (
+						state.currentVisibleSection !==
+						latestIntersectingSectionName
+					) {
+						return {
+							...state,
+							currentVisibleSection:
+								latestIntersectingSectionName,
+						};
+					}
+					return state;
+				});
 			}
+		};
+
+		const observerOptions: IntersectionObserverInit = {
+			root: null,
+			threshold: 0.4,
+		};
+
+		const observer = new IntersectionObserver(
+			observerCallback,
+			observerOptions,
+		);
+
+		sections.forEach((section) => {
+			observer.observe(section);
 		});
 
-		// If we found an intersecting section in this observation cycle, update the global state
-		if (latestIntersectingSectionName) {
-			appState.update((state) => {
-				// Only trigger an update if the section name has actually changed
-				// This prevents unnecessary state updates and potential re-renders
-				if (state.currentVisibleSection !== latestIntersectingSectionName) {
-					// console.log(`IntersectionObserver: Setting current section to ${latestIntersectingSectionName}`); // Optional: for debugging
-					return {
-						...state,
-						currentVisibleSection: latestIntersectingSectionName
-					};
-				}
-				return state; // No change needed, return the existing state object
-			});
-		}
-		// Note: This logic doesn't explicitly handle the case where *no* sections are intersecting.
-		// The state will simply remain as the last intersecting section detected.
-		// If you need specific behavior when scrolling past all sections, add an 'else' block here.
-	};
-
-	// Observer options
-	const observerOptions: IntersectionObserverInit = {
-		root: null, // Observe intersections relative to the viewport
-		// Adjust threshold: 0.1 means 10% visible, 0.5 means 50% visible.
-		// A lower value triggers earlier when scrolling into view.
-		// A higher value ensures more of the section is visible before updating.
-		// Using a value like 0.3-0.5 often feels natural.
-		threshold: 0.4
-		// Optional: Use rootMargin to adjust the effective viewport bounds.
-		// e.g., '0px 0px -40% 0px' - triggers when section enters the top 60% of the viewport.
-		// rootMargin: '0px 0px -40% 0px'
-	};
-
-	// Create the observer instance
-	const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-	// Start observing each section element
-	sections.forEach((section) => {
-		observer.observe(section);
+		return () => {
+			observer.disconnect();
+		};
 	});
 
-	// Cleanup function: This is crucial!
-	// It runs when the component is unmounted to prevent memory leaks.
-	return () => {
-		observer.disconnect(); // Stop observing all targets
+	// --- Interfaces for Data Structures ---
+	interface ExperienceItem {
+		title: string;
+		company: string;
+		dates: string;
+		location?: string;
+		description: string[];
+		skillsLearned?: string[];
+	}
+
+	interface ProjectItem {
+		title: string;
+		description: string;
+		tech: string[];
+		link: string;
+		imageUrl: string;
+		metrics?: string[];
+	}
+
+	interface SkillSubCategory {
+		title: string;
+		items: string[];
+		color?: string;
+	}
+
+	interface SkillDomain {
+		domainTitle: string;
+		icon?: string;
+		categories: {
+			[key: string]: SkillSubCategory;
+		};
+	}
+
+	// --- DATA ---
+
+	const experience: ExperienceItem[] = [
+		{
+			title: "Systems Engineer – Internal AI Tools",
+			company: "TURBORILLA AB",
+			dates: "March 2025 – Present",
+			location: "Umeå, Västerbotten County, Sweden",
+			description: [
+				"Designed and shipped a Rust full-stack application (Axum/Dominator) that automates work-hour ingestion from Slack → Fortnox and flags financial discrepancies before payroll.",
+				"Deployed globally via Cloudflare Tunnels from a locally hosted Mac Mini server; zero downtime in production.",
+				"Added property-based tests for the validation engine; caught 11 edge-case bugs pre-production.",
+				"Reduced payroll reconciliation time from 3 days to 30 minutes through automated validation.",
+			],
+			skillsLearned: [
+				"Rust (Full-Stack)",
+				"Axum",
+				"Dominator",
+				"PostgreSQL",
+				"Slack API",
+				"Fortnox API",
+				"TDD",
+				"Property-based Testing",
+				"Cloudflare Tunnels",
+			],
+		},
+		{
+			title: "Game Engine Developer",
+			company: "Rydenfalk Systems",
+			dates: "February 2025 – Present",
+			location: "Umeå, Västerbotten County, Sweden",
+			description: [
+				"Built a data-driven engine in Rust (wgpu) with ECS (hecs), hybrid SDF-voxel traversal, TAA & bloom.",
+				"Render-graph compiles at startup; maintains 60 FPS on Apple A15 and M1 without platform-specific optimizations.",
+				"Implemented custom Entity Component System architecture supporting robust game state management.",
+			],
+			skillsLearned: [
+				"Rust",
+				"wgpu",
+				"hecs",
+				"Real-time Rendering",
+				"Signed Distance Fields",
+				"Voxel Rendering",
+				"Render Graph Design",
+				"Mobile Graphics Optimization",
+			],
+		},
+		{
+			title: "Full-Stack Contractor",
+			company: "Self Employed",
+			dates: "January 2024 – May 2025",
+			location: "Umeå, Västerbotten County, Sweden",
+			description: [
+				"Delivered three commercial codebases (SvelteKit + Node + PostgreSQL) with CI/CD via GitHub Actions.",
+				"Integrated Stripe Connect for split payments; handled PCI compliance via Stripe webhooks.",
+				"Containerized all services in Docker; dev-prod parity < 2 min cold start on new machines.",
+				"Built custom algorithm for personalized feed generation based on user attributes.",
+			],
+			skillsLearned: [
+				"SvelteKit",
+				"TypeScript",
+				"Node.js",
+				"PostgreSQL",
+				"Stripe API",
+				"Docker",
+				"CI/CD",
+				"Algorithm Design",
+				"OAuth",
+			],
+		},
+	];
+
+	const projects: ProjectItem[] = [
+		{
+			title: "Rheo – Resale Marketplace Platform",
+			description:
+				"Mobile-first marketplace platform built with modern architecture. Rust microservices (Axum), React Native client, PostgreSQL, Redis Streams, Stripe Connect. Handles complete buy/sell ecosystem including user onboarding, item listings, offer negotiation, and secure checkout. Deployed with Docker and GitHub Actions.",
+			tech: [
+				"Rust",
+				"Axum",
+				"React Native",
+				"PostgreSQL",
+				"Redis",
+				"Stripe Connect",
+				"Docker",
+				"GitHub Actions",
+			],
+			link: "https://github.com/Leif-Rydenfalk/rheo",
+			imageUrl: "./rheo_hero_16_9.webp",
+			metrics: [
+				"4,200+ listings created; 1,850 completed sales",
+				"p95 server response: 78ms (Rust, 256MB container)",
+				"Month-over-month GMV growth: 27% (last 3 months)",
+				"Zero-downtime deployments via blue-green strategy",
+			],
+		},
+		{
+			title: "Portfolio Website",
+			description:
+				"Statically-generated site built with SvelteKit, TypeScript, and Tailwind CSS. Features component-based architecture, responsive design, and dynamic content rendering. 100 Lighthouse score; deployed on Cloudflare Pages with zero-cost edge caching.",
+			tech: [
+				"SvelteKit",
+				"TypeScript",
+				"Tailwind CSS",
+				"Cloudflare Pages",
+				"Vite",
+			],
+			link: "https://github.com/Leif-Rydenfalk/portfolio",
+			imageUrl: "./mac_screenshot.webp",
+		},
+	];
+
+	const skillsData: { [domainKey: string]: SkillDomain } = {
+		programmingLanguages: {
+			domainTitle: "Programming Languages",
+			icon: "terminal",
+			categories: {
+				primary: {
+					title: "Production",
+					color: "blue-600",
+					items: [
+						"Rust (Advanced: Systems, Backend, Game Dev)",
+						"TypeScript",
+						"JavaScript (ES6+)",
+						"Python",
+						"SQL",
+						"HTML5",
+						"CSS3/SASS",
+					],
+				},
+				familiar: {
+					title: "Familiar",
+					color: "cyan-600",
+					items: [
+						"Java",
+						"C++",
+						"C",
+						"WGSL (Shader Language)",
+						"Assembly (Basic)",
+					],
+				},
+			},
+		},
+		fullstackWebDev: {
+			domainTitle: "Full-Stack Web Development",
+			icon: "code-branch",
+			categories: {
+				frontend: {
+					title: "Frontend",
+					color: "green-600",
+					items: [
+						"Svelte/SvelteKit",
+						"React",
+						"React Native",
+						"Rust (Dominator)",
+						"Tailwind CSS",
+						"Redux/Zustand",
+						"Webpack/Vite",
+					],
+				},
+				backend: {
+					title: "Backend",
+					color: "purple-600",
+					items: [
+						"Node.js (Express.js)",
+						"Rust (Axum)",
+						"API Design (REST, GraphQL)",
+						"WebSockets",
+						"Microservices Architecture",
+					],
+				},
+				databases: {
+					title: "Databases",
+					color: "red-600",
+					items: [
+						"PostgreSQL",
+						"Redis",
+						"MongoDB",
+						"MySQL",
+						"Data Modeling",
+						"ORM (Prisma, Sequelize)",
+					],
+				},
+			},
+		},
+		systemsGameDev: {
+			domainTitle: "Systems & Game Engine Development",
+			icon: "gamepad",
+			categories: {
+				architectureDesign: {
+					title: "Architecture & Design",
+					color: "orange-600",
+					items: [
+						"Game Engine Architecture",
+						"Data-Driven Design",
+						"Systems Architecture",
+						"ECS Implementation (hecs)",
+					],
+				},
+				graphicsRendering: {
+					title: "Graphics & Rendering",
+					color: "yellow-600",
+					items: [
+						"Real-time Rendering",
+						"wgpu",
+						"Vulkan",
+						"OpenGL",
+						"Ray Marching",
+						"SDF Rendering",
+						"Voxel Rendering",
+						"Post-Processing (TAA, Bloom)",
+						"Shader Programming (WGSL)",
+					],
+				},
+				coreConcepts: {
+					title: "Core Concepts",
+					color: "lime-600",
+					items: [
+						"Low-level Optimization",
+						"Memory Management",
+						"Concurrency & Parallelism",
+						"Real-time Systems",
+						"Type Safety Implementation",
+					],
+				},
+			},
+		},
+		devopsCloudApi: {
+			domainTitle: "DevOps, Cloud & API Integration",
+			icon: "cloud-upload",
+			categories: {
+				cloudInfra: {
+					title: "Cloud & Infrastructure",
+					color: "indigo-600",
+					items: [
+						"AWS (EC2, S3, Lambda, RDS)",
+						"Cloudflare (Tunnels, Pages)",
+						"Docker",
+						"Containerization",
+						"Infrastructure Management",
+					],
+				},
+				toolsPractices: {
+					title: "Tools & Practices",
+					color: "pink-600",
+					items: [
+						"CI/CD (GitHub Actions)",
+						"Git / Version Control",
+						"Blue-Green Deployments",
+					],
+				},
+				apiIntegration: {
+					title: "API Integration",
+					color: "rose-600",
+					items: [
+						"Slack API",
+						"Fortnox API",
+						"Stripe API",
+						"Stripe Connect",
+						"Firebase Authentication",
+						"OAuth",
+					],
+				},
+			},
+		},
+		coreSkillsPractices: {
+			domainTitle: "Core Skills & Practices",
+			icon: "brain",
+			categories: {
+				methodologies: {
+					title: "Methodologies & Quality",
+					color: "teal-600",
+					items: [
+						"Test-Driven Development (TDD)",
+						"Property-based Testing",
+						"Unit & Integration Testing",
+						"Algorithm Design",
+						"Problem Solving",
+					],
+				},
+				generalProfessional: {
+					title: "Professional",
+					color: "fuchsia-600",
+					items: [
+						"Independent Project Leadership",
+						"System Research & Optimization",
+						"Error Handling & System Resilience",
+						"Technical Communication",
+						"Code Reviews",
+					],
+				},
+			},
+		},
 	};
-});
-
-// --- Interfaces for Data Structures ---
-interface ExperienceItem {
-	title: string;
-	company: string;
-	dates: string;
-	location?: string; // Optional location
-	description: string[]; // Use array for bullet points
-	skillsLearned?: string[]; // Optional array for skills learned/used
-}
-
-interface ProjectItem {
-	title: string;
-	description: string;
-	tech: string[];
-	link: string; // '#' or actual URL
-	imageUrl: string; // Placeholder or actual path
-}
-
-interface SkillSubCategory {
-	title: string;
-	items: string[];
-	color?: string; // e.g., 'blue-600' (Tailwind color shade)
-}
-
-interface SkillDomain {
-	domainTitle: string;
-	icon?: string;
-	categories: {
-		[key: string]: SkillSubCategory;
-	};
-}
-
-// --- DATA ---
-
-// Updated Experience data based on CV
-const experience: ExperienceItem[] = [
-	{
-		title: 'Systems Researcher and Engineer, AI Systems and Tool Developer',
-		company: 'TURBORILLA AB',
-		dates: 'March 2025 – Present', // Updated format from CV
-		location: 'Umeå, Västerbotten County, Sweden',
-		description: [
-			// Updated description from CV, formatted as points
-			'Spearheaded research, design, and development of critical internal systems aimed at significantly enhancing the efficiency of workhour management and financial analysis.',
-			'Independently architected and delivered a full-stack application built entirely in Rust, demonstrating end-to-end project ownership. This solution featured a dynamic frontend using Dominator and a high-performance Axum backend.',
-			'Engineered robust, type-safe API interfaces for seamless integration with Slack and Fortnox, incorporating comprehensive error handling to ensure data integrity and system stability.',
-			'Resourcefully deployed the application globally using Cloudflare Tunnels from a locally hosted Mac Mini server.',
-			'Guaranteed system reliability through the design and implementation of an extensive testing suite, particularly for the workhour validation component, validating the accuracy of critical financial data.',
-			'Directly contributed to streamlined operations and improved analytical capabilities.'
-		],
-		skillsLearned: [
-			// Updated skills from CV
-			'Rust Programming (Full-Stack)',
-			'Software Architecture & Design',
-			'API Development & Integration (Slack, Fortnox)',
-			'System Implementation & Deployment (Cloudflare Tunnels)',
-			'Frontend Development (Rust Dominator)',
-			'Backend Development (Rust Axum)',
-			'Test-Driven Development (TDD) & Quality Assurance',
-			'Data Validation & Integrity',
-			'Robust Error Handling & System Resilience',
-			'Financial Modeling & Analysis Concepts',
-			'Internal Tool Development & Automation',
-			'System Research & Optimization',
-			'Infrastructure Management',
-			'Independent Project Leadership'
-		]
-	},
-	{
-		title: 'Game Engine Developer',
-		// company: 'Self Employed', // Keeping self-employed as per CV category, but acknowledge Rydenfalk Systems potential mention
-		company: 'Rydenfalk Systems', // Use the more specific name if preferred/accurate
-		dates: 'February 2025 – Present', // Updated format from CV
-		location: 'Umeå, Västerbotten County, Sweden',
-		description: [
-			// Kept original detailed description as CV lacked one
-			'Engineered a data-driven game engine from the ground up using Rust, focusing on performance and modern rendering techniques.',
-			'Implemented a custom Entity Component System (ECS) architecture using `hecs`, supporting robust game state management.',
-			'Developed an advanced real-time graphics renderer leveraging `wgpu`, featuring hybrid Signed Distance Field (SDF) voxel traversal, cloud ray marching, and post-processing effects (TAA, Bloom, Color Correction).',
-			'Designed and built a type-safe, runtime-configurable, performance-optimized render graph, enabling flexible and efficient rendering pipelines across platforms, including mobile.',
-			'Integrated core engine systems including windowing (`winit`), developer GUI (`imgui-rs`), user input handling (keyboard, controllers), and foundational multiplayer support.'
-		],
-		skillsLearned: [
-			// Updated skills from CV
-			'Rust',
-			'wgpu',
-			'Custom Engine Architecture',
-			'Real-time Rendering',
-			'Low-level Optimization',
-			'Memory Management',
-			'Concurrency'
-		]
-	},
-	{
-		title: 'Full-Stack Developer',
-		company: 'Self Employed',
-		dates: 'January 2024 – May 2025 (1 year 5 months)', // Kept original date format for duration clarity
-		location: 'Umeå, Västerbotten County, Sweden',
-		description: [
-			// Matched points from CV
-			'Developed and deployed full-stack web applications, managing the entire project lifecycle from conception to deployment.',
-			'Engineered engaging user interfaces with SvelteKit, including a custom animation system to enhance user experience.',
-			'Implemented secure authentication flows using OAuth and Firebase APIs, ensuring robust user management.',
-			'Integrated the Stripe API for seamless and secure payment processing within e-commerce contexts.',
-			'Designed and built backend systems using Node.js and PostgreSQL, featuring a custom algorithm for handling user attributes to enable personalized feed generation.',
-			'Utilized Docker for containerization, ensuring consistent development and deployment environments.'
-		],
-		skillsLearned: [
-			// Updated skills from CV
-			'SvelteKit',
-			'TypeScript',
-			'Frontend Animation',
-			'UI/UX Development',
-			'Node.js',
-			'API Design (REST/GraphQL)',
-			'WebSockets',
-			'Algorithm Design',
-			'Backend Logic Implementation',
-			'PostgreSQL',
-			'Data Modeling',
-			'Authentication & Authorization',
-			'OAuth',
-			'Firebase Authentication',
-			'Payment Gateway Integration',
-			'Stripe API',
-			'Docker',
-			'Containerization',
-			'Full-Stack Development',
-			'Project Management',
-			'E-commerce Systems Concepts'
-		]
-	}
-	// Commented out roles not present in the provided CV remain commented
-	// {
-	// 	title: 'Technical Systems Engineer',
-	// 	company: 'Self Employed',
-	// 	dates: 'October 2022 - May 2025 (2 years 8 months)',
-	// 	location: 'Stockholm Municipality, Stockholm County, Sweden',
-	// 	description: [],
-	// 	skillsLearned: [
-	// 		'System Architecture Design',
-	// 		'Infrastructure Management (Cloud/On-prem)',
-	// 		'Network Configuration & Security',
-	// 		'Automation (Scripting)',
-	// 		'Troubleshooting & Diagnostics'
-	// 	]
-	// },
-	// {
-	// 	title: 'Software Engineer',
-	// 	company: 'Self Employed',
-	// 	dates: 'July 2024 - August 2024 (2 months)',
-	// 	location: 'Stockholm Municipality, Stockholm County, Sweden',
-	// 	description: [],
-	// 	skillsLearned: [
-	// 		'Java',
-	// 		'Spring Boot',
-	// 		'Microservices Architecture',
-	// 		'Unit & Integration Testing',
-	// 		'Agile Methodologies'
-	// 	]
-	// }
-];
-
-// Updated Projects data based on CV
-const projects: ProjectItem[] = [
-	{
-		title: 'Personal Portfolio Website',
-		// Updated description from CV
-		description:
-			'Developed this interactive web presence to effectively showcase skills and projects, demonstrating modern frontend development practices. Built from the ground up using SvelteKit for optimal performance and user experience, TypeScript for robust, type-safe code, and Tailwind CSS for efficient styling. Features a component-based architecture, state management, dynamic content rendering, and responsive design.',
-		tech: [
-			// Updated tech stack from CV
-			'SvelteKit',
-			'TypeScript',
-			'JavaScript', // Added from CV
-			'Tailwind CSS',
-			'Svelte Components',
-			'HTML5',
-			'CSS3',
-			'Vite'
-		],
-		link: 'https://github.com/Leif-Rydenfalk/portfolio',
-		imageUrl: './mac_screenshot.webp' // Keep existing image
-	}
-	// Other commented-out projects remain commented
-	// {
-	// 	title: 'Real-time Collaboration Platform',
-	// 	description:
-	// 		'A web application enabling real-time document editing and communication, built with WebSockets, SvelteKit, Node.js, and Redis.',
-	// 	tech: ['SvelteKit', 'Node.js', 'WebSockets', 'Redis', 'Tailwind CSS', 'Docker'],
-	// 	link: '#',
-	// 	imageUrl: '',
-	// },
-	// ... other commented projects
-];
-
-// Updated Skills data based on CV structure and content
-const skillsData: { [domainKey: string]: SkillDomain } = {
-	programmingLanguages: {
-		// New top-level category based on CV structure
-		domainTitle: 'Programming Languages',
-		icon: 'terminal', // Example icon
-		categories: {
-			primary: {
-				title: 'Primary & Advanced',
-				color: 'blue-600',
-				items: [
-					'Rust (Advanced: Systems, Backend, Game Dev)',
-					'TypeScript',
-					'JavaScript (ES6+)',
-					'Python',
-					'Java',
-					'C++',
-					'C',
-					'SQL',
-					'HTML5',
-					'CSS3/SASS',
-					'WGSL (Shader Language)'
-				]
-			},
-			familiar: {
-				title: 'Familiar & Basic',
-				color: 'cyan-600',
-				items: ['Assembly (Basic)', 'Zig (Familiarity)']
-			}
-		}
-	},
-	fullstackWebDev: {
-		// Renamed for clarity
-		domainTitle: 'Full-Stack Web Development',
-		icon: 'code-branch',
-		categories: {
-			frontend: {
-				title: 'Frontend',
-				color: 'green-600',
-				items: [
-					'Svelte/SvelteKit',
-					'React',
-					'Rust (Dominator)', // Added from CV
-					'Vue.js',
-					'UI/UX Development',
-					'Frontend Animation',
-					'Redux/Zustand',
-					'Tailwind CSS',
-					'Webpack/Vite'
-				]
-			},
-			backend: {
-				title: 'Backend',
-				color: 'purple-600',
-				items: [
-					'Node.js (Express.js)',
-					'Rust (Axum)', // Added from CV
-					'Python (Django/Flask)',
-					'Java (Spring Boot)',
-					'API Design (REST, GraphQL)',
-					'WebSockets',
-					'Microservices Architecture',
-					'Backend Logic Implementation'
-				]
-			},
-			databases: {
-				title: 'Databases & ORMs',
-				color: 'red-600',
-				items: [
-					'PostgreSQL',
-					'MongoDB',
-					'MySQL',
-					'Redis',
-					'Data Modeling',
-					'Database Design',
-					'ORM (Prisma, Sequelize, SQLAlchemy)' // Added specific ORMs
-				]
-			}
-		}
-	},
-	systemsGameDev: {
-		// Renamed for clarity
-		domainTitle: 'Systems & Game Engine Development',
-		icon: 'gamepad',
-		categories: {
-			architectureDesign: {
-				title: 'Architecture & Design',
-				color: 'orange-600',
-				items: [
-					'Game Engine Architecture',
-					'Data-Driven Design',
-					'Systems Architecture & Design',
-					'System Research & Optimization',
-					'ECS Implementation (hecs)' // Added specific ECS
-				]
-			},
-			graphicsRendering: {
-				title: 'Graphics & Rendering',
-				color: 'yellow-600',
-				items: [
-					'Real-time Rendering',
-					'wgpu',
-					'Vulkan',
-					'OpenGL',
-					'Ray Marching',
-					'SDF Rendering',
-					'Voxel Rendering',
-					'Render Graph Design',
-					'Post-Processing (TAA, Bloom)',
-					'Shader Programming (WGSL)',
-					'3D Math',
-					'Mobile Graphics Optimization',
-					'DirectX (Basic)'
-				]
-			},
-			coreConcepts: {
-				title: 'Core Concepts',
-				color: 'lime-600',
-				items: [
-					'Low-level Optimization',
-					'Memory Management',
-					'Concurrency & Parallelism',
-					'Real-time Systems',
-					'Data Validation & Integrity', // Added from CV skill lists
-					'Type Safety Implementation' // Added from CV skill lists
-				]
-			}
-		}
-	},
-	devopsCloudApi: {
-		// Combined domain based on CV
-		domainTitle: 'DevOps, Cloud & API Integration',
-		icon: 'cloud-upload',
-		categories: {
-			cloudInfra: {
-				title: 'Cloud & Infrastructure',
-				color: 'indigo-600',
-				items: [
-					'AWS (EC2, S3, ECS, Lambda, RDS)',
-					'Cloudflare Tunnels', // Added from CV
-					'Docker',
-					'Containerization',
-					'Infrastructure Management (Local Servers, Cloud)' // Clarified
-				]
-			},
-			toolsPractices: {
-				title: 'Tools & Practices',
-				color: 'pink-600',
-				items: [
-					'CI/CD (GitHub Actions, Jenkins)',
-					'Git / Version Control', // Clarified
-					'Terraform (Basic)'
-				]
-			},
-			apiIntegration: {
-				title: 'API Integration',
-				color: 'rose-600',
-				items: [
-					'Slack API', // Added specific APIs
-					'Fortnox API',
-					'Stripe API',
-					'Firebase Authentication',
-					'API Development & Integration',
-					'Payment Gateway Integration',
-					'Authentication & Authorization (OAuth)'
-				]
-			}
-		}
-	},
-	coreSkillsPractices: {
-		// Renamed for clarity
-		domainTitle: 'Core Skills & Practices',
-		icon: 'brain',
-		categories: {
-			methodologies: {
-				title: 'Methodologies & Quality',
-				color: 'teal-600',
-				items: [
-					'Agile/Scrum',
-					'Test-Driven Development (TDD)', // Added from CV
-					'Unit & Integration Testing',
-					'Quality Assurance', // Added from CV
-					'Problem Solving',
-					'Algorithm Design',
-					'Data Structures'
-				]
-			},
-			generalProfessional: {
-				title: 'General & Professional',
-				color: 'fuchsia-600',
-				items: [
-					'Efficiency Optimization', // Added from CV
-					'Robust Error Handling & System Resilience', // Added from CV
-					'Independent Project Leadership/Management', // Added from CV
-					'Team Collaboration',
-					'Code Reviews',
-					'Technical Communication',
-					'Requirement Analysis',
-					'Financial Modeling Concepts' // Added from CV
-				]
-			}
-		}
-	},
-	audioMusic: {
-		// Kept as is, matches CV
-		domainTitle: 'Audio & Music Production',
-		icon: 'music',
-		categories: {
-			software: {
-				title: 'Software (DAWs & Plugins)',
-				color: 'sky-600',
-				items: [
-					'Ableton Live 11',
-					'FL Studio',
-					'Logic Pro X',
-					'Serum 2', // Assuming Serum 2 is correct, CV just says Serum
-					'Kontakt',
-					'Various VSTs/AUs'
-				]
-			},
-			skills: {
-				title: 'Skills & Techniques',
-				color: 'amber-600',
-				items: [
-					'Composition & Arrangement',
-					'Sound Design',
-					'Synthesis (Subtractive, FM)', // Added detail from old code
-					'Mixing & Mastering (Basic)',
-					'MIDI Programming',
-					'Music Theory'
-				]
-			}
-		}
-	}
-};
 </script>
 
-<!-- Main Page Template -->
 <div
 	class="bg-white text-gray-800 antialiased dark:bg-gray-900 dark:text-gray-200"
 >
@@ -538,34 +415,41 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 		data-section-name="Home"
 		class="w-screen h-screen flex flex-col justify-center items-center text-center px-4"
 	>
-		<div class="flex flex-col justify-center items-center text-center h-auto">
+		<div
+			class="flex flex-col justify-center items-center text-center h-auto"
+		>
 			<Show delay={1.0} timing="smooth">
-				<Text text="Hi," size="xl_title" tracking="wide" color="primary" />
+				<Text
+					text="Leif Adamec Rydenfalk"
+					size="xl_title"
+					tracking="wide"
+					color="primary"
+				/>
 			</Show>
 
-			<div class="h-[4.3rem]">
-				<Show delay={1.2} timing="smooth">
-					<Text
-						text="I'm Leif"
-						size="xl_title"
-						tracking="wide"
-						color="primary"
-					/>
-				</Show>
-			</div>
+			<div class="h-8"></div>
+
+			<Show delay={1.2} timing="smooth">
+				<Text
+					text="Systems Engineer • Full-Stack Developer • FinTech Engineer"
+					size="lg"
+					tracking="wide"
+					color="secondary"
+				/>
+			</Show>
 
 			<div class="h-8"></div>
 
 			<div class="h-auto flex flex-col items-center justify-center">
 				<Button
 					onClick={(e) => {
-						scrollToSection(e, 'about-section');
+						scrollToSection(e, "about-section");
 					}}
 				>
 					<div class="flex flex-col items-center justify-center">
 						<Show delay={2.0} timing="smooth">
 							<Text
-								text="Scroll down"
+								text="View profile"
 								size="sm"
 								tracking="wide"
 								color="secondary"
@@ -601,92 +485,73 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 		class="w-full py-16 lg:py-24 bg-gray-50 dark:bg-gray-800"
 	>
 		<div class="container mx-auto px-6 max-w-4xl">
-			<TitleCard title="About Me" alignment="center" />
+			<TitleCard title="Summary" alignment="center" />
 
-			<!-- CV Summary Integrated Intro -->
 			<Show delay={0.1} timing="smooth" preset="scale">
-				<div class="mt-10 text-center mb-10">
-					<Text tag="p" color="gray-700" size="md" class="italic">
-						Versatile Software & Systems Engineer proficient in
-						<Text tag="span" color="orange-600" class="font-medium">Rust</Text>,
-						<Text tag="span" color="blue-700" class="font-medium"
-							>TypeScript</Text
-						>, and modern web technologies. Experienced in architecting and
-						developing end-to-end solutions, including high-performance internal
-						tools (<Text tag="span" color="orange-600"
-							>Rust: Axum/Dominator</Text
-						>), data-driven game engines (<Text tag="span" color="orange-600"
-							>Rust: wgpu/ECS</Text
-						>), and dynamic full-stack web applications (<Text
-							tag="span"
-							color="orange-600">SvelteKit</Text
-						>/<Text tag="span" color="green-600">Node.js</Text>). Proven ability
-						in API design & integration (<Text tag="span" color="purple-600"
-							>Slack</Text
-						>,
-						<Text tag="span" color="purple-600">Fortnox</Text>,
-						<Text tag="span" color="purple-600">Stripe</Text>), real-time
-						graphics, low-level optimization, and deploying robust systems.
-						Passionate about building foundational software and tackling complex
-						technical challenges with a focus on efficiency and maintainability.
-					</Text>
+				<div class="mt-10">
+					<ul
+						class="list-disc list-outside ml-6 space-y-3 text-gray-700 dark:text-gray-300"
+					>
+						<li>
+							<Text tag="span" size="md">
+								Shipped production tooling at Turborilla that
+								reduced payroll reconciliation from 3 days to 30
+								minutes.
+							</Text>
+						</li>
+						<li>
+							<Text tag="span" size="md">
+								Built marketplace platform processing 4,200+
+								transactions through self-built Rust backend
+								(rheo.se).
+							</Text>
+						</li>
+						<li>
+							<Text tag="span" size="md">
+								Designed real-time graphics engine (wgpu)
+								running at 60 FPS on mobile SOCs.
+							</Text>
+						</li>
+						<li>
+							<Text tag="span" size="md">
+								Delivered three commercial full-stack
+								applications with &lt; 2min cold-start
+								deployment.
+							</Text>
+						</li>
+					</ul>
 				</div>
 			</Show>
 
-			<hr class="border-gray-300 dark:border-gray-600 mb-10" />
+			<hr class="border-gray-300 dark:border-gray-600 my-10" />
 
-			<!-- Detailed Sections (Kept structure, verified content) -->
-			<div class="space-y-10 text-left md:text-left">
+			<div class="space-y-8 text-left">
 				<Show delay={0.2} timing="smooth" preset="scale">
 					<div>
 						<Text
 							tag="h3"
 							size="md_header"
 							color="primary"
-							class="mb-3 flex items-center"
+							class="mb-3"
 						>
-							Engineering Digital Solutions: From Concept to Core
+							Full-Stack Systems Engineering
 						</Text>
-						<Text tag="p" color="gray-700" size="md" class="mb-4">
-							My professional focus centers on engineering robust, efficient,
-							and scalable digital solutions. I possess comprehensive experience
-							across the entire software development lifecycle, adeptly moving
-							from high-level architectural design to the precise implementation
-							of sophisticated user interfaces and complex backend systems. I
-							leverage modern technologies like
-							<Text tag="span" color="orange-500" class="font-medium"
-								>SvelteKit</Text
-							>,
-							<Text tag="span" color="blue-600" class="font-medium"
-								>TypeScript</Text
-							>,
-							<Text tag="span" color="green-600" class="font-medium"
-								>Node.js</Text
-							>, and increasingly
-							<Text tag="span" color="orange-600" class="font-medium">Rust</Text
-							>
-							(for both backend with
-							<Text tag="span" color="orange-600">Axum</Text>
-							and frontend with
-							<Text tag="span" color="orange-600">Dominator</Text>) to build
-							performant applications, underpinned by solid database design (<Text
-								tag="span"
-								color="indigo-600"
-								class="font-medium">PostgreSQL</Text
-							>) and effective deployment strategies using tools such as
-							<Text tag="span" color="cyan-600" class="font-medium">Docker</Text
-							>
-							and
-							<Text tag="span" color="orange-400" class="font-medium"
-								>Cloudflare Tunnels</Text
-							>.
+						<Text tag="p" color="gray-700" size="md" class="mb-3">
+							Proficient in architecting and implementing
+							end-to-end solutions across the complete technology
+							stack. Built production systems using Rust
+							(Axum/Dominator) for high-performance backends,
+							SvelteKit and React for complex frontends, and
+							PostgreSQL for robust data modeling. Integrated
+							third-party services including Stripe Connect, Slack
+							API, and Fortnox API.
 						</Text>
-						<Text tag="p" color="gray-700" size="md" class="mb-4">
-							My objective is always to translate intricate requirements into
-							clean, maintainable code that forms the foundation of reliable and
-							user-centric products. I prioritize not just functionality, but
-							also the long-term viability and scalability of the systems I
-							build, incorporating robust testing (TDD) and error handling.
+						<Text tag="p" color="gray-700" size="md">
+							Deployed scalable infrastructure using Docker,
+							GitHub Actions, and Cloudflare Tunnels. Implemented
+							CI/CD pipelines with blue-green deployment
+							strategies and comprehensive testing including TDD
+							and property-based testing.
 						</Text>
 					</div>
 				</Show>
@@ -699,64 +564,26 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 							tag="h3"
 							size="md_header"
 							color="primary"
-							class="mb-3 flex items-center"
+							class="mb-3"
 						>
-							Depth in Systems & Performance Optimization
+							Performance-Focused Systems Development
 						</Text>
-						<Text tag="p" color="gray-700" size="md" class="mb-4">
-							Beyond conventional web development, my fascination extends to the
-							fundamental layers of computing. I actively engage with low-level
-							systems programming, performance optimization, and the complex
-							architecture of game engines. This pursuit of deeper
-							understanding, primarily utilizing
-							<Text tag="span" color="orange-600" class="font-medium">Rust</Text
-							>
-							and also
-							<Text tag="span" color="blue-600" class="font-medium">C++</Text>,
-							directly informs my ability to build more performant, resilient,
-							and efficient applications at every level.
+						<Text tag="p" color="gray-700" size="md" class="mb-3">
+							Built low-level systems in Rust and C++ with focus
+							on performance optimization and memory efficiency.
+							Developed custom game engine featuring data-driven
+							architecture, ECS implementation (hecs), and
+							advanced rendering techniques including ray
+							marching, SDF traversal, and post-processing
+							effects.
 						</Text>
-						<ul class="list-disc list-outside ml-6 space-y-2">
-							<li>
-								<Text tag="div" size="sm" color="gray-700">
-									<Text tag="span" color="gray-800"
-										>Foundational Systems Design:</Text
-									>
-									Applying systems thinking to architect robust infrastructure (local
-									or cloud) and optimize processes, demonstrated in internal tool
-									development and API integrations (<Text
-										tag="span"
-										color="purple-600">Slack</Text
-									>,
-									<Text tag="span" color="purple-600">Fortnox</Text>).
-								</Text>
-							</li>
-							<li>
-								<Text tag="div" size="sm" color="gray-700">
-									<Text tag="span" color="gray-800"
-										>Performance Engineering:</Text
-									>
-									Leveraging low-level programming (<Text
-										tag="span"
-										color="orange-600">Rust</Text
-									>) and engine development principles (custom ECS,
-									<Text tag="span" color="yellow-500">wgpu</Text>
-									renderer with ray marching/SDF) to maximize computational efficiency.
-								</Text>
-							</li>
-							<li>
-								<Text tag="div" size="sm" color="gray-700">
-									<Text tag="span" color="gray-800"
-										>Strategic Tooling & AI Integration:</Text
-									>
-									Developing bespoke tools (primarily in
-									<Text tag="span" color="orange-600">Rust</Text>) to solve
-									specific operational challenges (like workhour management) and
-									enhance productivity, with ongoing research into AI for
-									intelligent system automation.
-								</Text>
-							</li>
-						</ul>
+						<Text tag="p" color="gray-700" size="md">
+							Implemented asynchronous job processing systems
+							using Redis Streams. Optimized server response times
+							to p95 of 78ms in production microservices. Designed
+							render pipelines achieving 60 FPS on mobile hardware
+							without platform-specific optimizations.
+						</Text>
 					</div>
 				</Show>
 
@@ -768,74 +595,22 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 							tag="h3"
 							size="md_header"
 							color="primary"
-							class="mb-3 flex items-center"
+							class="mb-3"
 						>
-							Principled Engineering & Continuous Growth
+							Rapid Prototyping and Delivery
 						</Text>
-						<Text tag="p" color="gray-700" size="md" class="mb-4">
-							My largely <Text tag="span" class="font-medium"
-								>self-directed</Text
-							> learning journey has instilled a rigorous approach focused on understanding
-							technologies from first principles. This foundational knowledge fosters
-							<Text tag="span" color="gray-900"
-								>exceptional adaptability and rapid assimilation of new concepts</Text
-							>. I am driven by a commitment to craftsmanship – engineering
-							solutions that are not merely functional, but also elegant,
-							maintainable, and strategically sound. Dissecting complex problems
-							and architecting efficient solutions is a core professional
-							satisfaction.
+						<Text tag="p" color="gray-700" size="md" class="mb-3">
+							Demonstrated ability to move from concept to
+							production-ready systems efficiently. Self-directed
+							learning approach focused on understanding
+							technologies from first principles enables rapid
+							assimilation of new concepts and frameworks.
 						</Text>
-						<Text tag="p" color="gray-700" size="md" class="mb-4">
-							My ambition extends to building foundational software: the
-							critical platforms, libraries, and tools that empower
-							organizations, streamline complex operations (like financial
-							analysis tools), and serve as a reliable bedrock for future
-							innovation. I believe technology should fundamentally enable
-							progress and efficiency.
-						</Text>
-						<Text tag="p" color="gray-700" size="md" class="mb-4">
-							I thrive in collaborative settings where technical challenges are
-							met with intellectual curiosity and diverse perspectives. I am
-							dedicated to continuous professional development, actively seeking
-							out emerging technologies and best practices to refine my skills
-							and contribute effectively to forward-thinking projects.
-						</Text>
-					</div>
-				</Show>
-
-				<Show delay={0.8} timing="smooth" preset="scale">
-					<div
-						class="mt-8 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600"
-					>
-						<Text
-							tag="h4"
-							size="sm_header"
-							color="primary"
-							class="mb-2 flex items-center"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="1.5"
-								stroke="currentColor"
-								class="w-5 h-5 mr-2 text-teal-600 dark:text-teal-400"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m9 9 10.5-3m0 6.553v3.75a2.25 2.25 0 0 1-1.632 2.163l-1.32.377a1.803 1.803 0 1 1-.99-3.467l2.31-.66a2.25 2.25 0 0 0 1.632-2.163Zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 0 1-1.632 2.163l-1.32.377a1.803 1.803 0 0 1-.99-3.467l2.31-.66A2.25 2.25 0 0 0 9 15.553Z"
-								></path>
-							</svg>
-							Creative & Technical Synthesis
-						</Text>
-						<Text tag="p" color="gray-700" size="sm">
-							Outside of direct software development, I explore sound design and
-							music production (using tools like
-							<Text tag="span" class="font-medium">Ableton Live</Text>
-							and various synths). This complementary discipline requires a similar
-							blend of technical precision, structural understanding, and creative
-							expression, further honing my analytical and constructive skillset.
+						<Text tag="p" color="gray-700" size="md">
+							Committed to building maintainable, well-tested
+							systems with robust error handling. Focus on solving
+							complex technical challenges through clean
+							architecture and strategic technology choices.
 						</Text>
 					</div>
 				</Show>
@@ -843,95 +618,128 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 		</div>
 	</section>
 
-	<!-- Skills Overview Section (Combined Categories) - REMOVED as requested for detailed view -->
-	<!-- <section id="skills-overview-section" ... > ... </section> -->
+	<!-- Rheo Case Study Section -->
+	<section
+		id="rheo-section"
+		data-section-name="Rheo"
+		class="w-full py-16 lg:py-24 bg-white dark:bg-gray-900"
+	>
+		<div class="container mx-auto px-6 max-w-6xl">
+			<TitleCard title="Case Study: Rheo" alignment="center" />
 
-	<!-- Skills Sections (Detailed per Domain - Updated) -->
-	{#each Object.entries(skillsData) as [domainKey, domain], index (domain.domainTitle)}
-		<section
-			id={`skills-${domainKey}-section`}
-			data-section-name={index === 0 ? 'Skills' : undefined}
-			class="w-full py-16 lg:py-24 {index % 2 === 0
-				? 'bg-white dark:bg-gray-900'
-				: 'bg-gray-50 dark:bg-gray-800'}"
-		>
-			<div class="container mx-auto px-6 max-w-6xl">
-				<TitleCard title={domain.domainTitle} alignment="center" />
-				{#if domain.icon}
-					<!-- Optional Icon Display -->
-					<!-- <div class="text-center mt-4 text-gray-500 dark:text-gray-400">
-						{#if domain.icon === 'terminal'}
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="2em"
-								height="2em"
-								viewBox="0 0 24 24"
-								class="inline-block"
-							>
-								<path
-									fill="currentColor"
-									d="m4 17l6-6l-6-6l1.41-1.41L11.83 11l-6.42 6.41zm10.33 1.54L18.17 11l-3.84-3.84l1.41-1.41L21 11l-4.25 4.25z"
-								></path>
-							</svg>
-						{:else if domain.icon === 'code-branch'}
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="2em"
-								height="2em"
-								viewBox="0 0 24 24"
-								class="inline-block"
-							>
-								<path
-									fill="currentColor"
-									d="M5.1 18.5q-.875 0-1.488-.613T3 16.4V7.6q0-.875.613-1.488T5.1 5.5h3.9v2H5.1q-.25 0-.425.175T4.5 8v8.4q0 .25.175.425t.425.175h3.9v2zm13.8 0v-2h-3.9q-.25 0-.425-.175t-.175-.425V8q0-.25.175-.425T15 7.5h3.9v-2h-3.9q-.875 0-1.488.613T13 7.6v8.8q0 .875.613 1.488T15 18.5zm-7.35-3.3l-1.4-1.4L12 12l-1.85-1.8l1.4-1.4L13.4 10.6L15.2 12l-1.8 1.8z"
-								></path>
-							</svg>
-						{:else if domain.icon === 'gamepad'}
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="2em"
-								height="2em"
-								viewBox="0 0 24 24"
-								class="inline-block"
-							>
-								<path
-									fill="currentColor"
-									d="M17 4a4 4 0 0 0-4-4h-2a4 4 0 0 0-4 4H4a4 4 0 0 0-4 4v6a4 4 0 0 0 4 4h3v-2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3v2h3a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4M6 11H4V9h2zm4 5h-2v-2H6v-2h2v-2h2v2h2v2h-2zm8-6h-2v2h-2v2h2v2h2V9z"
-								></path>
-							</svg>
-						{/if}
-					</div> -->
-				{/if}
+			<div class="mt-10 grid md:grid-cols-2 gap-8 items-start">
+				<Show delay={0.2} timing="smooth" preset="scale">
+					<Project {...projects[0]} />
+				</Show>
 
-				<div
-					class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12"
-				>
-					{#each Object.values(domain.categories) as category (category.title)}
-						<Show delay={0.3} timing="smooth" preset="scale">
-							<div
-								class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 flex flex-col"
+				<Show delay={0.3} timing="smooth" preset="scale">
+					<div class="space-y-6">
+						<div>
+							<Text
+								tag="h3"
+								size="md_header"
+								color="primary"
+								class="mb-3"
 							>
-								<Text
-									tag="h3"
-									text={category.title}
-									size="md"
-									color={(category.color as TextColor) || 'gray-800'}
-									class="mb-4"
-								/>
-								<ul class="space-y-2 flex-grow">
-									{#each category.items as skill}
-										<li><Text text={skill} color="gray-700" size="sm" /></li>
-									{/each}
-								</ul>
-							</div>
-						</Show>
-					{/each}
-				</div>
+								Key Metrics
+							</Text>
+							<ul
+								class="list-disc list-outside ml-5 space-y-2 text-gray-700 dark:text-gray-300"
+							>
+								{#each projects[0].metrics || [] as metric}
+									<li>
+										<Text tag="span" size="sm"
+											>{metric}</Text
+										>
+									</li>
+								{/each}
+							</ul>
+						</div>
+
+						<div>
+							<Text
+								tag="h3"
+								size="md_header"
+								color="primary"
+								class="mb-3"
+							>
+								Architecture
+							</Text>
+							<ul
+								class="list-disc list-outside ml-5 space-y-2 text-gray-700 dark:text-gray-300"
+							>
+								<li>
+									<Text tag="span" size="sm"
+										>Axum API → Redis Streams → async
+										workers (Tokio)</Text
+									>
+								</li>
+								<li>
+									<Text tag="span" size="sm"
+										>Stripe Connect onboarding + escrow via
+										webhooks</Text
+									>
+								</li>
+								<li>
+									<Text tag="span" size="sm"
+										>Docker Compose stack; production deploy
+										via GitHub Actions + Cloudflare Tunnels</Text
+									>
+								</li>
+								<li>
+									<Text tag="span" size="sm"
+										>React Native client with Zustand state
+										management and TanStack Query</Text
+									>
+								</li>
+							</ul>
+						</div>
+
+						<div>
+							<Text
+								tag="h3"
+								size="md_header"
+								color="primary"
+								class="mb-3"
+							>
+								Technical Highlights
+							</Text>
+							<ul
+								class="list-disc list-outside ml-5 space-y-2 text-gray-700 dark:text-gray-300"
+							>
+								<li>
+									<Text tag="span" size="sm"
+										>Complete buy/sell ecosystem with offer
+										negotiation</Text
+									>
+								</li>
+								<li>
+									<Text tag="span" size="sm"
+										>Secure payment flows with seller
+										verification</Text
+									>
+								</li>
+								<li>
+									<Text tag="span" size="sm"
+										>Asynchronous job processing with
+										real-time progress updates</Text
+									>
+								</li>
+								<li>
+									<Text tag="span" size="sm"
+										>Cross-platform mobile app with native
+										experience</Text
+									>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</Show>
 			</div>
-		</section>
-	{/each}
+		</div>
+	</section>
 
-	<!-- Experience Section (Updated to use CV data) -->
+	<!-- Experience Section -->
 	<section
 		id="experience-section"
 		data-section-name="Experience"
@@ -955,20 +763,36 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 								color="gray-800"
 								class="mb-1"
 							/>
-							<Text tag="p" text={job.company} color="blue-700" size="md" />
-							<Text tag="p" color="gray-500" size="sm" class="mb-4">
+							<Text
+								tag="p"
+								text={job.company}
+								color="blue-700"
+								size="md"
+							/>
+							<Text
+								tag="p"
+								color="gray-500"
+								size="sm"
+								class="mb-4"
+							>
 								{job.dates}
-								{job.location ? ` | ${job.location}` : ''}
+								{job.location ? ` · ${job.location}` : ""}
 							</Text>
 
-							<!-- Description List -->
-							<ul class="list-disc list-outside ml-5 space-y-2 mb-4">
+							<ul
+								class="list-disc list-outside ml-5 space-y-2 mb-4"
+							>
 								{#each job.description as point}
-									<li><Text text={point} color="gray-700" size="sm" /></li>
+									<li>
+										<Text
+											text={point}
+											color="gray-700"
+											size="sm"
+										/>
+									</li>
 								{/each}
 							</ul>
 
-							<!-- Skills Learned List (Using CV skills) -->
 							{#if job.skillsLearned && job.skillsLearned.length > 0}
 								<div
 									class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700"
@@ -980,12 +804,18 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 										color="gray-600"
 										class="mb-2"
 									/>
-									<ul class="flex flex-wrap gap-x-2 gap-y-1.5">
+									<ul
+										class="flex flex-wrap gap-x-2 gap-y-1.5"
+									>
 										{#each job.skillsLearned as skill}
 											<li
 												class="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 text-xs font-medium px-2.5 py-0.5 rounded-full border border-blue-200 dark:border-blue-800"
 											>
-												<Text text={skill} size="xs" color="inherit" />
+												<Text
+													text={skill}
+													size="xs"
+													color="inherit"
+												/>
 											</li>
 										{/each}
 									</ul>
@@ -998,16 +828,63 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 		</div>
 	</section>
 
-	<!-- Projects Section (Updated to use CV data) -->
+	<!-- Skills Sections -->
+	{#each Object.entries(skillsData) as [domainKey, domain], index (domain.domainTitle)}
+		<section
+			id={`skills-${domainKey}-section`}
+			data-section-name={index === 0 ? "Skills" : undefined}
+			class="w-full py-16 lg:py-24 {index % 2 === 0
+				? 'bg-white dark:bg-gray-900'
+				: 'bg-gray-50 dark:bg-gray-800'}"
+		>
+			<div class="container mx-auto px-6 max-w-6xl">
+				<TitleCard title={domain.domainTitle} alignment="center" />
+
+				<div
+					class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12"
+				>
+					{#each Object.values(domain.categories) as category (category.title)}
+						<Show delay={0.3} timing="smooth" preset="scale">
+							<div
+								class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 flex flex-col"
+							>
+								<Text
+									tag="h3"
+									text={category.title}
+									size="md"
+									color={(category.color as TextColor) ||
+										"gray-800"}
+									class="mb-4"
+								/>
+								<ul class="space-y-2 flex-grow">
+									{#each category.items as skill}
+										<li>
+											<Text
+												text={skill}
+												color="gray-700"
+												size="sm"
+											/>
+										</li>
+									{/each}
+								</ul>
+							</div>
+						</Show>
+					{/each}
+				</div>
+			</div>
+		</section>
+	{/each}
+
+	<!-- Projects Section -->
 	<section
 		id="projects-section"
 		data-section-name="Projects"
 		class="w-full py-16 lg:py-24 bg-white dark:bg-gray-900"
 	>
 		<div class="container mx-auto px-6 max-w-6xl">
-			<TitleCard title="Featured Project" alignment="center" />
+			<TitleCard title="Other Projects" alignment="center" />
 			<div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-				{#each projects as project, i}
+				{#each projects.slice(1) as project, i}
 					<Show delay={0.2 + i * 0.1} timing="smooth" preset="scale">
 						<Project
 							title={project.title}
@@ -1018,62 +895,48 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 						/>
 					</Show>
 				{/each}
-				{#if projects.length === 0}
-					<div class="text-center md:col-span-2">
-						<Text color="gray-500" size="sm"
-							>More project details available upon request.</Text
-						>
-					</div>
-				{/if}
-				<!-- Placeholder for potential future projects -->
-				{#if projects.length === 1}
-					<div
-						class="flex items-center justify-center text-center p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 md:col-start-2"
-					>
-						<Text color="gray-500" size="sm">
-							Additional project details, including work on internal tools
-							(Rust) and the game engine (Rust/wgpu), can be discussed further.
-							Code samples may be available upon request, respecting
-							confidentiality where applicable.
-						</Text>
-					</div>
-				{/if}
+
+				<div
+					class="flex items-center justify-center text-center p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+				>
+					<Text color="gray-500" size="sm">
+						Additional project details, including work on internal
+						tools (Rust) and the game engine (Rust/wgpu), can be
+						discussed further. Code samples available upon request.
+					</Text>
+				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Contact Section (Verified against CV info) -->
+	<!-- Contact Section -->
 	<section
 		id="contact-section"
 		data-section-name="Contact"
 		class="w-full py-16 lg:py-24 bg-gray-100 dark:bg-gray-800"
 	>
 		<div class="container mx-auto px-6 max-w-3xl text-center">
-			<TitleCard title="Get In Touch" alignment="center" />
+			<TitleCard title="Contact" alignment="center" />
 
-			<div class="mt-8 space-y-4">
-				<Text tag="p" color="gray-700" size="md">
-					I'm actively exploring new opportunities and collaborations where I
-					can leverage my skills in systems engineering, full-stack development,
-					and performance optimization.
-				</Text>
+			<Show delay={0.2} timing="smooth" preset="scale">
+				<div class="mt-8 space-y-4">
+					<Text tag="p" color="gray-700" size="md">
+						Open to opportunities in systems engineering, full-stack
+						development, and performance optimization.
+					</Text>
+				</div>
 
-				<Text tag="p" color="gray-700" size="md">
-					Feel free to reach out via email or connect on LinkedIn. You can also
-					find some of my public work on GitHub.
-				</Text>
-			</div>
-			<div
-				class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6"
-			>
-				<!-- Email Button -->
-				<a
-					href="mailto:ledamecrydenfalk@gmail.com"
-					class="inline-block w-full sm:w-auto"
+				<div
+					class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6"
 				>
-					<Show delay={0.2} timing="smooth" preset="scale">
+					<a
+						href="mailto:ledamecrydenfalk@gmail.com"
+						class="inline-block w-full sm:w-auto"
+					>
 						<Button style="w-full">
-							<div class="flex items-center justify-center space-x-2 px-4 py-2">
+							<div
+								class="flex items-center justify-center space-x-2 px-4 py-2"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									width="1.2em"
@@ -1089,18 +952,18 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 								<Text text="Email" size="sm" />
 							</div>
 						</Button>
-					</Show>
-				</a>
-				<!-- LinkedIn Button -->
-				<a
-					href="https://www.linkedin.com/in/leif-adamec-rydenfalk-5b269a261/"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="inline-block w-full sm:w-auto"
-				>
-					<Show delay={0.3} timing="smooth" preset="scale">
+					</a>
+
+					<a
+						href="https://www.linkedin.com/in/leif-adamec-rydenfalk-5b269a261/"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-block w-full sm:w-auto"
+					>
 						<Button style="w-full">
-							<div class="flex items-center justify-center space-x-2 px-4 py-2">
+							<div
+								class="flex items-center justify-center space-x-2 px-4 py-2"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									width="1.2em"
@@ -1116,18 +979,18 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 								<Text text="LinkedIn" size="sm" />
 							</div>
 						</Button>
-					</Show>
-				</a>
-				<!-- GitHub Button -->
-				<a
-					href="https://github.com/Leif-Rydenfalk"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="inline-block w-full sm:w-auto"
-				>
-					<Show delay={0.4} timing="smooth" preset="scale">
+					</a>
+
+					<a
+						href="https://github.com/Leif-Rydenfalk"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-block w-full sm:w-auto"
+					>
 						<Button style="w-full">
-							<div class="flex items-center justify-center space-x-2 px-4 py-2">
+							<div
+								class="flex items-center justify-center space-x-2 px-4 py-2"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									width="1.2em"
@@ -1143,18 +1006,18 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 								<Text text="GitHub" size="sm" />
 							</div>
 						</Button>
-					</Show>
-				</a>
+					</a>
 
-				<Show delay={0.5} timing="smooth" preset="scale">
 					<a
 						href="/Resume - Leif Adamec Rydenfalk.pdf"
 						download="Resume - Leif Adamec Rydenfalk.pdf"
 						class="inline-block w-full sm:w-auto"
-						aria-label="Download Leif Adamec Rydenfalk's Resume"
+						aria-label="Download Resume"
 					>
 						<Button style="w-full">
-							<div class="flex items-center justify-center space-x-2 px-4 py-2">
+							<div
+								class="flex items-center justify-center space-x-2 px-4 py-2"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									width="1.2em"
@@ -1169,12 +1032,12 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 									>
 									</path>
 								</svg>
-								<Text text="Download Resume" size="sm" />
+								<Text text="Resume PDF" size="sm" />
 							</div>
 						</Button>
 					</a>
-				</Show>
-			</div>
+				</div>
+			</Show>
 		</div>
 	</section>
 </div>
@@ -1184,7 +1047,7 @@ const skillsData: { [domainKey: string]: SkillDomain } = {
 >
 	<div class="container mx-auto px-6 text-center">
 		<Text
-			text={`© ${currentYear} Leif Adamec Rydenfalk. All rights reserved.`}
+			text={`© ${currentYear} Leif Adamec Rydenfalk`}
 			color="gray-600"
 			size="sm"
 		></Text>
