@@ -503,7 +503,7 @@
 							<Text tag="span" size="md">
 								Built marketplace platform capable processing
 								4,200+ transactions per seconds through
-								self-built Rust backend (rheo.se).
+								self-built Rust backend (rheo.se) in 3 months.
 							</Text>
 						</li>
 						<li>
