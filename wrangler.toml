@@ -3,12 +3,6 @@ name = "adamec"
 compatibility_date = "2025-01-27"
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
-[build]
-command = "npm run build"
-
-[build.upload]
-format = "service-worker"
-
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Pages Function, running it closer to your back-end infrastructure
 # rather than the end user may result in better performance.
@@ -24,12 +18,12 @@ format = "service-worker"
 # [vars]
 # MY_VARIABLE = "production_value"
 
-# Bind the Workers AI model catalog. Run machine learning models, powered by serverless GPUs, on Cloudflare’s global network
+# Bind the Workers AI model catalog. Run machine learning models, powered by serverless GPUs, on Cloudflare's global network
 # Docs: https://developers.cloudflare.com/pages/functions/bindings/#workers-ai
 # [ai]
 # binding = "AI"
 
-# Bind a D1 database. D1 is Cloudflare’s native serverless SQL database.
+# Bind a D1 database. D1 is Cloudflare's native serverless SQL database.
 # Docs: https://developers.cloudflare.com/pages/functions/bindings/#d1-databases
 # [[d1_databases]]
 # binding = "MY_DB"
