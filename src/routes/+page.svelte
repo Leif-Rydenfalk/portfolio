@@ -115,7 +115,7 @@
 	const experience: ExperienceItem[] = [
 		{
 			title: "Systems Engineer – Internal AI Tools",
-			company: "TURBORILLA AB",
+			company: "Gaming Studio (Umeå)",
 			dates: "March 2025 – Present",
 			location: "Umeå, Västerbotten County, Sweden",
 			description: [
@@ -137,24 +137,27 @@
 			],
 		},
 		{
-			title: "Game Engine Developer",
+			title: "Independent Systems Engineer",
 			company: "Rydenfalk Systems",
 			dates: "February 2025 – Present",
 			location: "Umeå, Västerbotten County, Sweden",
 			description: [
-				"Built a data-driven engine in Rust (wgpu) with ECS (hecs), hybrid SDF-voxel traversal, TAA & bloom.",
-				"Render-graph compiles at startup; maintains 60 FPS on Apple A15 and M1 without platform-specific optimizations.",
-				"Implemented custom Entity Component System architecture supporting robust game state management.",
+				"Built CE ('Sea') — a peer-to-peer compute mesh and economy in Rust: libp2p NAT-traversing P2P, custom PoW blockchain for credit accounting, Docker/gVisor sandboxed execution. Distributed via Homebrew, Scoop, AUR, and Chocolatey.",
+				"Designed OpenJaws cell mesh platform: TypeScript/Rust distributed runtime where self-discovering 'cells' expose type-safe capabilities via gossip-based atlas sync. Replaces monorepos and service meshes with zero bespoke configuration.",
+				"Shipped Blueberry Browser — Electron app exposing an MCP server so AI agents can operate a real, logged-in Chromium session as a web-action runtime. Handles Gmail, WhatsApp Web, LinkedIn with no per-site integrations.",
+				"Built data-driven voxel rendering engine in Rust (wgpu) with ECS (hecs), SDF-voxel traversal, TAA & bloom; maintains 60 FPS on Apple A15 and M1 without platform-specific optimizations.",
 			],
 			skillsLearned: [
 				"Rust",
+				"libp2p",
+				"PoW Blockchain",
+				"Docker/gVisor",
+				"Distributed Systems",
+				"Electron",
+				"MCP",
+				"TypeScript",
 				"wgpu",
-				"hecs",
-				"Real-time Rendering",
-				"Signed Distance Fields",
-				"Voxel Rendering",
-				"Render Graph Design",
-				"Mobile Graphics Optimization",
+				"ECS Architecture",
 			],
 		},
 		{
@@ -205,18 +208,84 @@
 			],
 		},
 		{
-			title: "Portfolio Website",
+			title: "CE — Peer-to-Peer Compute Mesh",
 			description:
-				"Statically-generated site built with SvelteKit, TypeScript, and Tailwind CSS. Features component-based architecture, responsive design, and dynamic content rendering. 100 Lighthouse score; deployed on Cloudflare Pages with zero-cost edge caching.",
+				"\"Like if Bitcoin ran Docker.\" CE (pronounced 'Sea') is a decentralised compute economy written in Rust. Nodes donate compute, earn credits, and spend them on distributed workloads. Built on libp2p for NAT-traversing P2P networking, a custom PoW blockchain for credit accounting, and Docker/gVisor for sandboxed container execution. Public relay at ce-net.com. Distributed via Homebrew, Scoop, AUR, and Chocolatey.",
 			tech: [
-				"SvelteKit",
-				"TypeScript",
-				"Tailwind CSS",
-				"Cloudflare Pages",
-				"Vite",
+				"Rust",
+				"libp2p",
+				"PoW Blockchain",
+				"Docker",
+				"gVisor",
+				"Ed25519",
+				"Tokio",
+				"Hetzner",
 			],
-			link: "https://github.com/Leif-Rydenfalk/portfolio",
-			imageUrl: "./mac_screenshot.webp",
+			link: "https://github.com/ce-net/ce",
+			imageUrl: "",
+		},
+		{
+			title: "OpenJaws — Cell Mesh Platform",
+			description:
+				"A distributed computing platform where every service is a sovereign, self-healing 'cell'. Cells gossip-sync a shared atlas, auto-discover typed capabilities, and self-replicate to new nodes via Cell.toml manifests. Production cells span AI inference, Docker management, Hetzner cloud provisioning, live trading, and mobile dashboards. Zero service-mesh configuration — add a directory, it joins the mesh.",
+			tech: [
+				"TypeScript",
+				"Rust",
+				"libp2p",
+				"Bun",
+				"Zod",
+				"Distributed Systems",
+				"P2P",
+			],
+			link: "https://github.com/Leif-Rydenfalk/openjaws",
+			imageUrl: "",
+		},
+		{
+			title: "Blueberry Browser — AI Agent Web Runtime",
+			description:
+				"An Electron browser that AI agents operate like a human. Exposes a Model Context Protocol (MCP) server so any orchestrator (Claude, n8n, cron jobs) can delegate web UI tasks to a real, logged-in Chromium session. No per-site integrations or API tokens — if a human can do it in a browser, Blueberry can too. Used daily for Gmail, WhatsApp Web, and LinkedIn automation.",
+			tech: [
+				"Electron",
+				"TypeScript",
+				"MCP",
+				"Chromium",
+				"Claude API",
+				"Agentic Workflows",
+			],
+			link: "https://github.com/Leif-Rydenfalk/blueberry-browser",
+			imageUrl: "",
+		},
+		{
+			title: "Voxel Rendering Engine",
+			description:
+				"Data-driven rendering engine in Rust (wgpu) with hybrid SDF-voxel ray traversal, TAA, bloom, and an atmospheric scattering pass. Render graph compiles at startup; ECS (hecs) drives game state. Achieves 60 FPS on Apple A15 and M1 without platform-specific branches. Separate voxel_ray_traversal library published for standalone use.",
+			tech: [
+				"Rust",
+				"wgpu",
+				"WGSL",
+				"hecs (ECS)",
+				"SDF",
+				"Voxel Rendering",
+				"TAA",
+				"Render Graph",
+			],
+			link: "https://github.com/Leif-Rydenfalk/voxel_ray_traversal",
+			imageUrl: "",
+		},
+		{
+			title: "Cell Mesh Protocol (cell-mesh-protocol-1)",
+			description:
+				"Reference TypeScript/Rust SDK for the Cell Mesh architecture. Provides typed RPC (router/procedure), gossip-based atlas synchronisation, Ed25519 capability proofs, and an ask/tell signal model. Every mesh call is a self-describing Signal forwarded hop-by-hop; cells learn the topology as a side-effect of handling requests. Published as a standalone package — used as the foundation for OpenJaws.",
+			tech: [
+				"TypeScript",
+				"Rust",
+				"Zod",
+				"Ed25519",
+				"Gossip Protocol",
+				"Type-safe RPC",
+			],
+			link: "https://github.com/Leif-Rydenfalk/cell-mesh-protocol-1",
+			imageUrl: "",
 		},
 	];
 
@@ -335,6 +404,45 @@
 				},
 			},
 		},
+		distributedSystems: {
+			domainTitle: "Distributed Systems & Networking",
+			icon: "network",
+			categories: {
+				p2pNetworking: {
+					title: "P2P & Networking",
+					color: "violet-600",
+					items: [
+						"libp2p (Gossip, DHT, NAT traversal)",
+						"PoW Blockchain Design",
+						"Gossip Protocol",
+						"Circuit Relay",
+						"Ed25519 Identity & Signing",
+					],
+				},
+				cellMesh: {
+					title: "Cell Mesh Architecture",
+					color: "emerald-600",
+					items: [
+						"Cell Mesh Protocol",
+						"Type-safe RPC (router/procedure)",
+						"Atlas Synchronisation",
+						"Self-healing Topology",
+						"gVisor Sandboxing",
+					],
+				},
+				agenticTooling: {
+					title: "Agentic & AI Tooling",
+					color: "sky-600",
+					items: [
+						"Model Context Protocol (MCP)",
+						"Electron / Chromium Automation",
+						"Claude API Integration",
+						"n8n / Cron Orchestration",
+						"Browser-based Agent Runtimes",
+					],
+				},
+			},
+		},
 		devopsCloudApi: {
 			domainTitle: "DevOps, Cloud & API Integration",
 			icon: "cloud-upload",
@@ -345,6 +453,7 @@
 					items: [
 						"AWS (EC2, S3, Lambda, RDS)",
 						"Cloudflare (Tunnels, Pages)",
+						"Hetzner Cloud",
 						"Docker",
 						"Containerization",
 						"Infrastructure Management",
@@ -357,6 +466,7 @@
 						"CI/CD (GitHub Actions)",
 						"Git / Version Control",
 						"Blue-Green Deployments",
+						"Package Distribution (Homebrew, AUR, Scoop)",
 					],
 				},
 				apiIntegration: {
@@ -429,7 +539,7 @@
 
 			<Show delay={1.2} timing="smooth">
 				<Text
-					text="Systems Engineer • Full-Stack Developer • FinTech Engineer"
+					text="Systems Engineer • Distributed Systems • Full-Stack Developer"
 					size="lg"
 					tracking="wide"
 					color="secondary"
@@ -492,29 +602,39 @@
 					>
 						<li>
 							<Text tag="span" size="md">
-								Shipped production tooling that is capable of
-								reducing payroll reconciliation from 3 days to
-								30 minutes.
+								Built CE ('Sea') — a peer-to-peer compute mesh and
+								economy in Rust (libp2p, PoW blockchain, Docker/gVisor).
+								Public relay at ce-net.com; distributed via Homebrew,
+								AUR, Scoop, and Chocolatey.
 							</Text>
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Built marketplace platform capable processing
-								4,200+ transactions per seconds through
-								self-built Rust backend (rheo.se) in 3 months.
+								Designed OpenJaws cell mesh: distributed TypeScript/Rust
+								runtime where services self-discover via gossip-based
+								atlas sync and expose 100% type-safe APIs with zero
+								configuration.
 							</Text>
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Designed real-time graphics engine (wgpu)
-								running at 60 FPS on mobile SOCs.
+								Shipped production tooling that reduced payroll
+								reconciliation from 3 days to 30 minutes at a gaming studio;
+								built marketplace processing 4,200+ TPS (rheo.se).
 							</Text>
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Delivered three commercial full-stack
-								applications with &lt; 2min cold-start
-								deployment.
+								Built Blueberry Browser — AI agents operate a real
+								Chromium session via MCP; handles Gmail, LinkedIn, and
+								WhatsApp Web automation with no per-site integrations.
+							</Text>
+						</li>
+						<li>
+							<Text tag="span" size="md">
+								Designed voxel rendering engine (Rust/wgpu) with SDF
+								traversal, TAA, and bloom running at 60 FPS on
+								Apple A15 and M1.
 							</Text>
 						</li>
 					</ul>
@@ -532,24 +652,25 @@
 							color="primary"
 							class="mb-3"
 						>
-							Full-Stack Systems Engineering
+							Distributed Systems & P2P Networks
 						</Text>
 						<Text tag="p" color="gray-700" size="md" class="mb-3">
-							Proficient in architecting and implementing
-							end-to-end solutions across the complete technology
-							stack. Built production systems using Rust
-							(Axum/Dominator) for high-performance backends,
-							SvelteKit and React for complex frontends, and
-							PostgreSQL for robust data modeling. Integrated
-							third-party services including Stripe Connect, Slack
-							API, and Fortnox API.
+							Built CE ('Sea') — a peer-to-peer compute mesh and
+							economy where every node is assumed hostile and the
+							honest majority wins. Implemented libp2p networking
+							with NAT traversal, a custom PoW blockchain for
+							credit accounting, and Docker/gVisor sandboxing for
+							secure workload execution. Deployed a public relay
+							on Hetzner (ce-net.com); packaged for Homebrew, AUR,
+							Scoop, and Chocolatey.
 						</Text>
 						<Text tag="p" color="gray-700" size="md">
-							Deployed scalable infrastructure using Docker,
-							GitHub Actions, and Cloudflare Tunnels. Implemented
-							CI/CD pipelines with blue-green deployment
-							strategies and comprehensive testing including TDD
-							and property-based testing.
+							Designed the OpenJaws cell mesh platform and its
+							underlying Cell Mesh Protocol: TypeScript/Rust
+							distributed runtime where self-discovering 'cells'
+							gossip-sync a shared atlas and expose type-safe
+							capabilities with no bespoke service-mesh
+							configuration.
 						</Text>
 					</div>
 				</Show>
@@ -564,23 +685,25 @@
 							color="primary"
 							class="mb-3"
 						>
-							Performance-Focused Systems Development
+							Full-Stack & Performance-Focused Engineering
 						</Text>
 						<Text tag="p" color="gray-700" size="md" class="mb-3">
-							Built low-level systems in Rust and C++ with focus
-							on performance optimization and memory efficiency.
-							Developed custom game engine featuring data-driven
-							architecture, ECS implementation (hecs), and
-							advanced rendering techniques including ray
-							marching, SDF traversal, and post-processing
-							effects.
+							Proficient in architecting end-to-end solutions across
+							the full stack. Production systems in Rust
+							(Axum/Dominator) for high-performance backends,
+							SvelteKit and React for complex frontends, PostgreSQL
+							for robust data modeling. Integrated Stripe Connect,
+							Slack API, and Fortnox API. Deployed scalable
+							infrastructure using Docker, GitHub Actions, and
+							Cloudflare Tunnels.
 						</Text>
 						<Text tag="p" color="gray-700" size="md">
-							Implemented asynchronous job processing systems
-							using Redis Streams. Optimized server response times
-							to p95 of 78ms in production microservices. Designed
-							render pipelines achieving 60 FPS on mobile hardware
-							without platform-specific optimizations.
+							Built low-level systems in Rust with focus on
+							performance and memory efficiency: voxel rendering
+							engine (wgpu, ECS, SDF traversal, TAA, bloom) at
+							60 FPS on mobile SOCs; p95 78ms API response in
+							production microservices; 1.48M messages/sec
+							zero-copy IPC in the Cell runtime.
 						</Text>
 					</div>
 				</Show>
@@ -595,20 +718,24 @@
 							color="primary"
 							class="mb-3"
 						>
-							Rapid Prototyping and Delivery
+							Agentic Tooling & Rapid Delivery
 						</Text>
 						<Text tag="p" color="gray-700" size="md" class="mb-3">
-							Demonstrated ability to move from concept to
-							production-ready systems efficiently. Self-directed
-							learning approach focused on understanding
-							technologies from first principles enables rapid
-							assimilation of new concepts and frameworks.
+							Shipped Blueberry Browser: an Electron app that
+							exposes an MCP server so AI agents can delegate
+							real-browser tasks — clicking, form filling, reading
+							dashboards — to a live, logged-in Chromium session.
+							No per-site integrations; if a human can do it in a
+							browser, the agent can too.
 						</Text>
 						<Text tag="p" color="gray-700" size="md">
-							Committed to building maintainable, well-tested
-							systems with robust error handling. Focus on solving
-							complex technical challenges through clean
-							architecture and strategic technology choices.
+							Self-directed learning approach focused on
+							understanding technologies from first principles.
+							Moved Blueberry from concept to daily-use tool in
+							two weeks; built the Cell Mesh Protocol from scratch
+							and open-sourced it as a standalone SDK. Committed
+							to clean architecture, maintainable code, and
+							shipping things that actually work.
 						</Text>
 					</div>
 				</Show>
@@ -898,9 +1025,10 @@
 					class="flex items-center justify-center text-center p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
 				>
 					<Text color="gray-500" size="sm">
-						Additional project details, including work on internal
-						tools (Rust) and the game engine (Rust/wgpu), can be
-						discussed further. Code samples available upon request.
+						Additional projects including internal tooling (gaming studio),
+						dream-engine (biologically-inspired neural simulation),
+						and various Rust/C++ experiments are available on GitHub
+						or upon request.
 					</Text>
 				</div>
 			</div>
