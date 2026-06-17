@@ -119,45 +119,50 @@
 			dates: "March 2025 – Present",
 			location: "Umeå, Västerbotten County, Sweden",
 			description: [
-				"Designed and shipped a Rust full-stack application (Axum/Dominator) that automates work-hour ingestion from Slack → Fortnox and flags financial discrepancies before payroll.",
-				"Deployed globally via Cloudflare Tunnels from a locally hosted Mac Mini server; zero downtime in production.",
-				"Added property-based tests for the validation engine; caught 11 edge-case bugs pre-production.",
-				"Reduced payroll reconciliation time from 3 days to 30 minutes through automated validation.",
+				"Built and shipped an autonomous 'time-guardian' tool in Rust (Axum/Tokio) that ingests employee time reports from Fortnox, analyzes them against company policy with an LLM, and nudges employees over Slack.",
+				"Reduced payroll reconciliation from ~3 days to ~30 minutes; runs unattended with automatic OAuth token refresh and autonomous Fortnox↔Slack identity mapping.",
+				"Secured an admin dashboard behind Google OAuth; wrote property-based tests for the validation engine that caught 11 edge-case bugs pre-production.",
+				"Deployed from a locally hosted Mac Mini via Cloudflare Tunnels with zero downtime in production.",
 			],
 			skillsLearned: [
-				"Rust (Full-Stack)",
+				"Rust",
 				"Axum",
-				"Dominator",
+				"Tokio",
+				"LLM Tool-Use",
 				"PostgreSQL",
 				"Slack API",
 				"Fortnox API",
-				"TDD",
+				"Google OAuth",
 				"Property-based Testing",
 				"Cloudflare Tunnels",
 			],
 		},
 		{
-			title: "Independent Systems Engineer",
+			title: "Independent Software Engineer / Founder",
 			company: "Rydenfalk Systems",
 			dates: "February 2025 – Present",
 			location: "Umeå, Västerbotten County, Sweden",
 			description: [
-				"Built CE ('Sea') — a peer-to-peer compute mesh and economy in Rust: libp2p NAT-traversing P2P, custom PoW blockchain for credit accounting, Docker/gVisor sandboxed execution. Distributed via Homebrew, Scoop, AUR, and Chocolatey.",
-				"Designed OpenJaws cell mesh platform: TypeScript/Rust distributed runtime where self-discovering 'cells' expose type-safe capabilities via gossip-based atlas sync. Replaces monorepos and service meshes with zero bespoke configuration.",
-				"Shipped Blueberry Browser — Electron app exposing an MCP server so AI agents can operate a real, logged-in Chromium session as a web-action runtime. Handles Gmail, WhatsApp Web, LinkedIn with no per-site integrations.",
-				"Built data-driven voxel rendering engine in Rust (wgpu) with ECS (hecs), SDF-voxel traversal, TAA & bloom; maintains 60 FPS on Apple A15 and M1 without platform-specific optimizations.",
+				"Designed and built Myra / Trana (trana.app) solo — an AI lesson-material SaaS for Swedish teachers. One TypeScript monorepo ships web (TanStack Start + React 19 on Cloudflare Workers), landing (Astro), mobile (Expo), and desktop (Electron) from shared packages, on a Supabase backend with RLS.",
+				"Built Cell — a biologically-inspired distributed substrate in Rust with zero-copy rkyv messaging at 1.48M msg/s (~677ns RTT, single core) and embeddable Raft. Underpins CE, a P2P compute economy (libp2p, PoW credit ledger, gVisor sandboxing) packaged for Homebrew, AUR, Scoop, and Chocolatey.",
+				"Designed OpenJaws cell-mesh platform: TypeScript/Rust runtime where self-discovering 'cells' gossip-sync a shared atlas and expose 100% type-safe capabilities with zero service-mesh configuration.",
+				"Shipped Blueberry Browser — Electron app exposing an MCP server so AI agents operate a real, logged-in Chromium session like a human. Automates Gmail, WhatsApp Web, and LinkedIn daily with no per-site integrations.",
+				"Built a Rust/wgpu voxel game engine (ECS via hecs, hot-reloaded WGSL, SDF-voxel traversal, TAA, bloom) at 60 FPS on Apple A15/M1.",
 			],
 			skillsLearned: [
 				"Rust",
-				"libp2p",
-				"PoW Blockchain",
-				"Docker/gVisor",
-				"Distributed Systems",
-				"Electron",
-				"MCP",
 				"TypeScript",
+				"React 19",
+				"TanStack Start",
+				"Expo / React Native",
+				"Electron",
+				"Supabase",
+				"libp2p",
+				"Raft Consensus",
+				"Zero-copy IPC (rkyv)",
+				"Docker/gVisor",
+				"MCP",
 				"wgpu",
-				"ECS Architecture",
 			],
 		},
 		{
@@ -189,39 +194,56 @@
 		{
 			title: "Rheo – Resale Marketplace Platform",
 			description:
-				"Mobile-first marketplace platform built with modern architecture. Rust microservices (Axum), React Native client, PostgreSQL, Redis Streams, Stripe Connect. Handles complete buy/sell ecosystem including user onboarding, item listings, offer negotiation, and secure checkout. Deployed with Docker and GitHub Actions.",
+				"Mobile-first resale marketplace — roughly 2M lines of Rust. Axum services, React Native client, PostgreSQL, Redis Streams, Stripe Connect, PostNord shipping, and Cloudflare R2. Multi-currency design with a per-listing 'anchor currency' so prices never drift from what the seller chose. Three independent monitoring layers (in-process Sentinel + Cloudflare Worker + Hetzner systemd timer) that fail independently and alert over email and Telegram.",
 			tech: [
 				"Rust",
 				"Axum",
 				"React Native",
 				"PostgreSQL",
-				"Redis",
+				"Redis Streams",
 				"Stripe Connect",
+				"Cloudflare R2",
 				"Docker",
-				"GitHub Actions",
 			],
 			link: "https://rheo.se",
 			imageUrl: "./rheo_hero_16_9.webp",
 			metrics: [
 				"p95 server response: 78ms (Rust, 256MB container)",
-				"Zero-downtime deployments via blue-green strategy",
+				"Three fail-independent monitoring layers; blue-green deploys",
 			],
 		},
 		{
-			title: "CE — Peer-to-Peer Compute Mesh",
+			title: "Myra / Trana — AI Lesson-Material SaaS",
 			description:
-				"\"Like if Bitcoin ran Docker.\" CE (pronounced 'Sea') is a decentralised compute economy written in Rust. Nodes donate compute, earn credits, and spend them on distributed workloads. Built on libp2p for NAT-traversing P2P networking, a custom PoW blockchain for credit accounting, and Docker/gVisor for sandboxed container execution. Public relay at ce-net.com. Distributed via Homebrew, Scoop, AUR, and Chocolatey.",
+				"An AI lesson-material SaaS for Swedish upper-secondary teachers, built solo. One TypeScript monorepo (Turborepo + pnpm) ships four clients from shared packages: web (TanStack Start + React 19 on Cloudflare Workers), landing (Astro on Cloudflare Pages), mobile (Expo, App Store + Play Store), and desktop (Electron). Supabase backend with row-level security, and a full test pyramid — Vitest, Playwright, pgTAP, and Deno — wired into per-app CI/CD.",
+			tech: [
+				"TypeScript",
+				"TanStack Start",
+				"React 19",
+				"Astro",
+				"Expo",
+				"Electron",
+				"Supabase",
+				"Cloudflare Workers",
+			],
+			link: "https://trana.app",
+			imageUrl: "",
+		},
+		{
+			title: "Cell / CE — Distributed Compute Substrate",
+			description:
+				"A biologically-inspired distributed computing substrate in Rust — sandboxed 'cells' exchange zero-copy, rkyv-archived messages over Unix sockets at 1.48M msg/s (~677ns median RTT, single core), with embeddable Raft consensus and #[protein] codegen macros. It underpins CE, a peer-to-peer compute economy: nodes donate compute, earn credits, and spend them on workloads via libp2p, a custom PoW credit ledger, and gVisor sandboxing. Public relay at ce-net.com; packaged for Homebrew, AUR, Scoop, and Chocolatey.",
 			tech: [
 				"Rust",
+				"rkyv (zero-copy)",
+				"Raft",
 				"libp2p",
-				"PoW Blockchain",
-				"Docker",
+				"PoW Ledger",
 				"gVisor",
 				"Ed25519",
 				"Tokio",
-				"Hetzner",
 			],
-			link: "https://github.com/ce-net/ce",
+			link: "https://github.com/Leif-Rydenfalk/cell",
 			imageUrl: "",
 		},
 		{
@@ -256,20 +278,20 @@
 			imageUrl: "",
 		},
 		{
-			title: "Voxel Rendering Engine",
+			title: "Voxel Game Engine",
 			description:
-				"Data-driven rendering engine in Rust (wgpu) with hybrid SDF-voxel ray traversal, TAA, bloom, and an atmospheric scattering pass. Render graph compiles at startup; ECS (hecs) drives game state. Achieves 60 FPS on Apple A15 and M1 without platform-specific branches. Separate voxel_ray_traversal library published for standalone use.",
+				"Rust/wgpu engine built as a Cargo workspace: a reusable engine library (render graph, ECS via hecs, hot-reloaded WGSL shaders, audio, input) drives a hybrid SDF-voxel ray-traversal renderer with TAA, bloom, and atmospheric scattering at 60 FPS on Apple A15 and M1 — plus a separate N-body orbital ('spacetime') simulator running on the same engine.",
 			tech: [
 				"Rust",
 				"wgpu",
 				"WGSL",
 				"hecs (ECS)",
-				"SDF",
-				"Voxel Rendering",
-				"TAA",
+				"SDF Ray Traversal",
+				"TAA / Bloom",
 				"Render Graph",
+				"Hot-reload",
 			],
-			link: "https://github.com/Leif-Rydenfalk/voxel_ray_traversal",
+			link: "https://github.com/Leif-Rydenfalk/game-engine",
 			imageUrl: "",
 		},
 		{
@@ -539,7 +561,7 @@
 
 			<Show delay={1.2} timing="smooth">
 				<Text
-					text="Systems Engineer • Distributed Systems • Full-Stack Developer"
+					text="Systems & Full-Stack Engineer • Distributed Systems • Real-Time Graphics"
 					size="lg"
 					tracking="wide"
 					color="secondary"
@@ -602,37 +624,41 @@
 					>
 						<li>
 							<Text tag="span" size="md">
-								Built CE ('Sea') — a peer-to-peer compute mesh and
-								economy in Rust (libp2p, PoW blockchain, Docker/gVisor).
-								Public relay at ce-net.com; distributed via Homebrew,
-								AUR, Scoop, and Chocolatey.
+								Shipped Myra / Trana (trana.app) solo — an AI
+								lesson-material SaaS for Swedish teachers. One
+								TypeScript monorepo ships web, landing, mobile, and
+								desktop clients from shared packages on a Supabase
+								backend.
 							</Text>
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Designed OpenJaws cell mesh: distributed TypeScript/Rust
-								runtime where services self-discover via gossip-based
-								atlas sync and expose 100% type-safe APIs with zero
-								configuration.
+								Built Cell — a biologically-inspired distributed
+								substrate in Rust: zero-copy messaging at 1.48M
+								msg/s (~677ns RTT, single core) with embeddable Raft.
+								Underpins CE, a P2P compute economy (libp2p, PoW
+								ledger, gVisor) packaged for Homebrew, AUR, Scoop,
+								and Chocolatey.
 							</Text>
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Shipped production tooling that reduced payroll
-								reconciliation from 3 days to 30 minutes at a gaming studio;
-								built marketplace processing 4,200+ TPS (rheo.se).
+								Built and run Rheo (rheo.se) — a ~2M-line Rust resale
+								marketplace with Stripe Connect, PostNord shipping,
+								and three fail-independent monitoring layers; p95
+								~78ms on a 256MB container.
 							</Text>
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Built Blueberry Browser — AI agents operate a real
+								Shipped Blueberry Browser — AI agents operate a real
 								Chromium session via MCP; handles Gmail, LinkedIn, and
 								WhatsApp Web automation with no per-site integrations.
 							</Text>
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Designed voxel rendering engine (Rust/wgpu) with SDF
+								Designed a Rust/wgpu voxel game engine with SDF
 								traversal, TAA, and bloom running at 60 FPS on
 								Apple A15 and M1.
 							</Text>
@@ -729,13 +755,15 @@
 							browser, the agent can too.
 						</Text>
 						<Text tag="p" color="gray-700" size="md">
-							Self-directed learning approach focused on
-							understanding technologies from first principles.
-							Moved Blueberry from concept to daily-use tool in
-							two weeks; built the Cell Mesh Protocol from scratch
-							and open-sourced it as a standalone SDK. Committed
-							to clean architecture, maintainable code, and
-							shipping things that actually work.
+							Self-directed learning focused on understanding
+							technologies from first principles, paired with a habit
+							of shipping. Built and launched Myra / Trana — a
+							multi-platform AI SaaS — solo from a single monorepo;
+							moved Blueberry from concept to daily-use tool in two
+							weeks; open-sourced the Cell Mesh Protocol as a
+							standalone SDK. Committed to clean architecture,
+							maintainable code, and shipping things that actually
+							work.
 						</Text>
 					</div>
 				</Show>
@@ -1025,10 +1053,12 @@
 					class="flex items-center justify-center text-center p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
 				>
 					<Text color="gray-500" size="sm">
-						Additional projects including internal tooling (gaming studio),
-						dream-engine (biologically-inspired neural simulation),
-						and various Rust/C++ experiments are available on GitHub
-						or upon request.
+						More on GitHub: Dream Engine (real-time biologically-inspired
+						neuron/learning sim, 90 FPS on a GTX 1060), Mariana
+						(zero-dependency streaming LLM reasoning console), CaptureFlow
+						(production AI assistant with web + Telegram), a chess engine,
+						and a deep back-catalog of graphics and simulation experiments
+						in Rust and C++.
 					</Text>
 				</div>
 			</div>

@@ -9,28 +9,83 @@ import { appState } from '$lib/util';
 // --- DYNAMIC HEAD LOGIC ---
 $: currentSection = $appState.currentVisibleSection;
 
-// Helper function to generate dynamic page titles
+// Helper function to generate dynamic page titles.
+// The base name stays in every title so branded search ("Leif Rydenfalk")
+// always has the name in the indexed <title>, whatever section renders first.
+const NAME = 'Leif Adamec Rydenfalk';
 function generateTitle(section: string): string {
 	switch (section) {
-		case 'Home':
-			return `Portfolio`;
 		case 'About':
-			return `About Me | Background & Philosophy`;
+			return `About | ${NAME} — Systems & Full-Stack Engineer`;
 		case 'Skills':
-			return `Technical Skills | Rust, TS, Web, Systems`;
+			return `Skills: Rust, TypeScript, Distributed Systems | ${NAME}`;
 		case 'Experience':
-			return `Professional Experience`;
+			return `Experience | ${NAME}`;
 		case 'Projects':
-			return `Featured Projects`;
+			return `Projects: Rheo, Myra/Trana, Cell | ${NAME}`;
 		case 'Contact':
-			return `Contact Me`;
+			return `Contact | ${NAME}`;
+		case 'Home':
 		default:
-			return `Portfolio`;
+			return `${NAME} — Systems & Full-Stack Engineer, Founder`;
 	}
 }
 
 $: pageTitle = generateTitle(currentSection);
-let metaDescription = `Portfolio of Leif Adamec Rydenfalk, Full-Stack Software Engineer, AI tools and Systems Engineer based in Umeå, Sweden. Specializing in Rust, TypeScript, SvelteKit, full-stack development, and systems/game engine technology. Explore projects, skills, and experience. Detailed overview of Leif Adamec Rydenfalk's technical skills: Expertise includes Rust, TypeScript, C++, Systems Programming, Full-Stack Web Dev (SvelteKit, Node.js), Game Engines (wgpu), DevOps, and more.`;
+let metaDescription = `Leif Adamec Rydenfalk — systems & full-stack software engineer and founder in Umeå, Sweden. Founder of the Rheo resale marketplace (Rust) and the Myra/Trana AI EdTech SaaS. Deep Rust experience across distributed systems, real-time graphics, and AI agent tooling (MCP). Explore projects, skills, and experience.`;
+
+// Structured data (schema.org Person) — the canonical, truthful description of
+// who Leif is for search engines. Links the name to his ventures and profiles.
+const personJsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: 'Leif Adamec Rydenfalk',
+	alternateName: ['Leif Rydenfalk', 'Leif Adamec'],
+	url: 'https://adamec.me',
+	image: 'https://adamec.me/mac_screenshot.webp',
+	jobTitle: 'Software Engineer & Founder',
+	description:
+		'Systems and full-stack software engineer and founder specializing in Rust, distributed systems, real-time graphics, and AI agent tooling.',
+	email: 'mailto:ledamecrydenfalk@gmail.com',
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: 'Umeå',
+		addressRegion: 'Västerbotten County',
+		addressCountry: 'SE'
+	},
+	worksFor: { '@type': 'Organization', name: 'Rydenfalk Systems' },
+	founder: [
+		{
+			'@type': 'Organization',
+			name: 'Rheo',
+			url: 'https://rheo.se',
+			description: 'Mobile-first resale marketplace built in Rust.'
+		},
+		{
+			'@type': 'Organization',
+			name: 'Myra / Trana',
+			url: 'https://trana.app',
+			description: 'AI lesson-material SaaS for Swedish teachers.'
+		}
+	],
+	knowsAbout: [
+		'Rust',
+		'TypeScript',
+		'Distributed Systems',
+		'Peer-to-peer Networking',
+		'Real-time Graphics',
+		'wgpu',
+		'WebGPU',
+		'Game Engine Development',
+		'AI Agents',
+		'Model Context Protocol',
+		'Full-Stack Web Development'
+	],
+	sameAs: [
+		'https://github.com/Leif-Rydenfalk',
+		'https://www.linkedin.com/in/leif-adamec-rydenfalk-5b269a261/'
+	]
+};
 </script>
 
 <svelte:head>
@@ -64,6 +119,9 @@ let metaDescription = `Portfolio of Leif Adamec Rydenfalk, Full-Stack Software E
 
 	<!-- Canonical URL -->
 	<link rel="canonical" href="https://adamec.me/" />
+
+	<!-- Structured data: schema.org Person -->
+	{@html `<script type="application/ld+json">${JSON.stringify(personJsonLd)}</` + `script>`}
 
 	<!-- Keywords (less impactful for SEO now, but doesn't hurt) -->
 	<meta
