@@ -7,7 +7,7 @@ Umeå, Sweden
 
 **Summary**
 
-Software engineer who ships end-to-end — from zero-copy Rust runtimes and real-time GPU renderers to multi-platform SaaS products. Equally at home in deep systems work (a 1.48M-msg/s distributed substrate, a P2P compute economy) and in shipping polished products solo (a marketplace and an EdTech SaaS, both live in production). Self-taught; learns from first principles and builds the whole stack.
+Systems engineer and founder who builds the systems companies usually rent — and operates them in production. Currently running a peer-to-peer compute mesh with its own credit economy (70+ services, live paid workloads), a resale marketplace with full payment flows, distributed LLM inference across a heterogeneous fleet, and a multi-platform AI SaaS. Ships 500k+ lines of production Rust/TypeScript a year solo by engineering the development process itself around fleets of AI agents. Self-taught; learns from first principles and builds the whole stack — from sub-microsecond IPC to payment settlement to the deploy pipeline.
 
 ---
 
@@ -19,15 +19,17 @@ Software engineer who ships end-to-end — from zero-copy Rust runtimes and real
 - Built and shipped an autonomous "time-guardian" tool in Rust (Axum/Tokio) that ingests employee time reports from Fortnox, analyzes them against company policy with an LLM, and nudges employees over Slack — turning a manual, multi-day reconciliation chore into a self-running service.
 - Reduced payroll reconciliation time from ~3 days to ~30 minutes; the service runs unattended with automatic OAuth token refresh and autonomous Fortnox↔Slack identity mapping.
 - Secured an admin dashboard behind Google OAuth; wrote property-based tests for the validation engine that caught 11 edge-case bugs pre-production.
-- Deployed from a locally hosted Mac Mini via Cloudflare Tunnels with zero downtime in production.
+- Deployed via Cloudflare Tunnels with zero downtime in production.
 
-**Independent Software Engineer / Founder** | Rydenfalk Systems | Umeå, Sweden
+**Founder / Systems Engineer** | Rydenfalk Systems | Umeå, Sweden
 *February 2025 – Present*
 
-- **Myra / Trana** ([trana.app](https://trana.app)) — designed and built an AI lesson-material SaaS for Swedish upper-secondary teachers, solo. One TypeScript monorepo (Turborepo, pnpm) ships four clients from shared packages: web (TanStack Start + React 19 on Cloudflare Workers), landing (Astro on Cloudflare Pages), mobile (Expo/React Native, App Store + Play Store), and desktop (Electron). Supabase backend with row-level security; full test pyramid (Vitest, Playwright, pgTAP, Deno) and per-app CI/CD.
-- **Cell** — a biologically-inspired distributed computing substrate in Rust: sandboxed processes ("cells") exchange zero-copy, `rkyv`-archived messages over Unix sockets. Sustains **1.48M messages/sec at ~677ns median RTT on a single core**, with an embeddable Raft consensus layer and a 9M-TPS market-simulation benchmark. Underpins **CE**, a peer-to-peer compute economy (libp2p NAT traversal, custom PoW credit ledger, gVisor sandboxing) with a public relay at ce-net.com, packaged for Homebrew, AUR, Scoop, and Chocolatey.
-- **OpenJaws** — a distributed "cell mesh" platform (TypeScript + Rust) where self-discovering cells gossip-sync a shared atlas and expose 100% type-safe capabilities through a router/procedure API. Add a directory with a `Cell.toml`, it joins the mesh; remove it, the mesh heals — zero service-mesh configuration.
-- **Blueberry Browser** — an Electron/Chromium browser that exposes a Model Context Protocol (MCP) server, letting AI agents operate a real, logged-in session like a human. Used daily to automate Gmail, WhatsApp Web, and LinkedIn with no per-site integrations. Went from concept to daily-use tool in two weeks.
+- **CE / ce-net** ([ce-net.com](https://ce-net.com)) — designed, built, and operate a peer-to-peer compute mesh and economy: run a node, donate compute, earn credits, spend them on other people's machines. Every node is assumed hostile — Ed25519 identity, signed capability chains as the only trust primitive (attenuation, revocation), a PoW credit ledger with escrow and payment channels, and gVisor-sandboxed workloads. The paid compute economy is live: usage is metered, admitted, and settled across a multi-machine fleet (Hetzner relay, GPU workstation, laptops, in-browser WASM nodes). Packaged for Homebrew, AUR, Scoop, and Chocolatey.
+- Built **70+ services on the mesh** rebuilding Google-class infrastructure as apps over one SDK: S3-class object storage, a Firestore-class realtime document DB, GKE-style container orchestration, pub/sub with durable replay, CDN, serverless functions, IAM with passwordless device pairing, distributed CI, and ngrok-style capability-gated tunnels.
+- **Distributed LLM inference** — ce-exo serves large models across the heterogeneous fleet by wrapping production engines (vLLM, llama.cpp, exo, Ollama) behind one OpenAI-compatible API with NAT-traversing transport and capability-gated access; ce-tabnet shards a transformer layer-by-layer across browser tabs (pipeline-parallel WebGPU inference). Also designed a clinical deployment where inference runs on hospital GPUs and PHI never leaves the LAN.
+- **Myra / Trana** ([trana.app](https://trana.app)) — an AI lesson-material SaaS for Swedish upper-secondary teachers. One TypeScript monorepo ships four clients (web, mobile via App Store/Play Store, desktop, landing) from shared packages; Supabase backend with row-level security; full test pyramid wired into per-app CI/CD.
+- **Blueberry Browser** — an Electron/Chromium browser exposing an MCP server so AI agents operate a real, logged-in session like a human; automates Gmail, WhatsApp Web, and LinkedIn with no per-site integrations.
+- Engineer the development process itself around fleets of parallel AI agents — recorded conventions, shared findings backlogs, remote build offloading, reproduce-first bug methodology — sustaining 500k+ production lines a year, solo. Foundation: **Cell**, a zero-copy Rust substrate sustaining 1.48M messages/sec at ~677ns median RTT on a single core, with embeddable Raft.
 
 **Full-Stack Contractor** | Self Employed | Umeå, Sweden
 *January 2024 – May 2025*
@@ -41,38 +43,42 @@ Software engineer who ships end-to-end — from zero-copy Rust runtimes and real
 
 **Selected Projects**
 
-**Myra / Trana** — [trana.app](https://trana.app)
-AI lesson-material SaaS for Swedish teachers. Single TypeScript monorepo → web, landing, mobile, and desktop from shared `ui`/`config` packages. TanStack Start + React 19, Astro, Expo, Electron, Supabase (RLS, Edge Functions). Tested with Vitest, Playwright, and pgTAP; shipped through per-app CI/CD to Cloudflare, the App Store/Play Store, and GitHub Releases.
+**CE / ce-net** — [ce-net.com](https://ce-net.com)
+Peer-to-peer compute mesh and economy in Rust. libp2p (Kademlia, Gossipsub, circuit relay, hole punching), PoW credit ledger with integer base-unit money, escrowed job settlement, payment channels with off-chain receipts, capability-chain IAM, gVisor sandboxing. 70+ services rebuild cloud infrastructure as mesh apps. Live paid economy across a real multi-machine fleet.
+
+**ce-exo + ce-tabnet** — [github.com/ce-net/ce-exo](https://github.com/ce-net/ce-exo)
+Distributed LLM inference. ce-exo: one OpenAI-compatible API over a NAT-traversing mesh, wrapping vLLM / llama.cpp / exo / Ollama — one command deploys an engine to a GPU machine and routes chat traffic to it from anywhere, capability-authed. ce-tabnet: a transformer sharded layer-by-layer across browser tabs — pipeline-parallel WebGPU inference.
 
 **Rheo** — [rheo.se](https://rheo.se)
-Mobile-first resale marketplace, ~2M lines of Rust. Axum services, React Native client, PostgreSQL, Redis Streams, Stripe Connect, PostNord shipping, Cloudflare R2. Multi-currency design with a per-listing "anchor currency" so prices never drift from what the seller chose. Three independent monitoring layers (in-process Sentinel + a Cloudflare Worker + a Hetzner systemd timer) that fail independently and alert over email/Telegram. p95 ~78ms on a 256MB container; blue-green deploys.
+Mobile-first resale marketplace in Rust. Axum services, React Native client, PostgreSQL, Redis Streams, Stripe Connect (onboarding, escrowed split payments via webhooks), PostNord shipping, Cloudflare R2. Multi-currency with a per-listing "anchor currency" so prices never drift from what the seller chose. Three fail-independent monitoring layers (in-process sentinel + Cloudflare Worker + Hetzner systemd timer) alerting over email/Telegram. p95 ~78ms on a 256MB container; blue-green deploys.
 
-**Cell / CE** — [github.com/Leif-Rydenfalk/cell](https://github.com/Leif-Rydenfalk/cell)
-Biologically-inspired distributed substrate in Rust — "cells," "membranes," "vesicles," "synapses." Zero-copy `rkyv` messaging at 1.48M msg/s / ~677ns RTT, embeddable Raft consensus, `#[protein]` codegen macros. Foundation for CE, a P2P compute economy (libp2p, PoW credit ledger, gVisor sandboxing).
+**Myra / Trana** — [trana.app](https://trana.app)
+AI lesson-material SaaS for Swedish teachers. Single TypeScript monorepo → web (TanStack Start + React 19 on Cloudflare Workers), landing (Astro), mobile (Expo), desktop (Electron) from shared packages. Supabase (RLS, Edge Functions); Vitest, Playwright, pgTAP; per-app CI/CD to Cloudflare, the App Store/Play Store, and GitHub Releases.
 
-**OpenJaws + Cell Mesh Protocol** — [github.com/Leif-Rydenfalk/openjaws](https://github.com/Leif-Rydenfalk/openjaws)
-Distributed cell-mesh runtime. Sovereign cells self-discover via gossip-based atlas sync, self-replicate via `Cell.toml`, and expose typed RPC with Ed25519 capability proofs. Reference SDK open-sourced as `cell-mesh-protocol-1`.
+**Spacegame** — [github.com/ce-net/spacegame](https://github.com/ce-net/spacegame)
+Browser multiplayer with no game server: every player's browser runs the full authoritative simulation (Rust → WASM + WebGL2) and peers merge state by quorum — replicated authority instead of client-server. Zero-delay prediction, per-RTT update rates, population-driven persistence. Deploys gated on a live browser smoke test of the production path.
 
 **Blueberry Browser** — [github.com/Leif-Rydenfalk/blueberry-browser](https://github.com/Leif-Rydenfalk/blueberry-browser)
 Electron browser with a built-in MCP server. AI agents delegate real web-UI tasks (clicks, form fills, reads) to a live, logged-in Chromium session — no per-site integrations or API tokens.
 
 **Voxel Game Engine** — [github.com/Leif-Rydenfalk/game-engine](https://github.com/Leif-Rydenfalk/game-engine)
-Rust/wgpu engine as a Cargo workspace: a reusable engine library (render graph, ECS via `hecs`, hot-reloaded WGSL shaders, audio, input) driving a SDF-voxel ray-traversal renderer with TAA, bloom, and atmospheric scattering at 60 FPS on Apple A15/M1 — plus a separate N-body orbital ("spacetime") simulator on the same engine.
+Rust/wgpu engine: render graph, ECS via `hecs`, hot-reloaded WGSL shaders, SDF-voxel ray traversal with TAA, bloom, and atmospheric scattering at 60 FPS on Apple A15/M1.
 
-**Also:** Dream Engine (real-time biologically-inspired neuron/learning sim, 90 FPS on a GTX 1060), Mariana (zero-dependency streaming LLM reasoning console), CaptureFlow (production AI assistant with web + Telegram), a chess engine, and a deep back-catalog of graphics/simulation experiments in Rust and C++.
+**Also:** Cell (zero-copy distributed substrate, 1.48M msg/s), OpenJaws (typed self-discovering cell mesh), Cerena (10k-player distributed RPG, in progress), ce-cast (distributed live-streaming studio), Dream Engine (real-time neuron/learning sim), Mariana (streaming LLM reasoning console), and a deep back-catalog of graphics/simulation work in Rust and C++.
 
 ---
 
 **Skills**
 
 - **Languages:** Rust (advanced), TypeScript, JavaScript, Python, SQL, WGSL, C, C++
+- **Distributed Systems:** libp2p (DHT, gossip, NAT traversal), PoW ledgers, Raft consensus, capability security (attenuation/revocation), zero-copy IPC (rkyv), shared-memory transports, BFT design, Sybil resistance
+- **LLM / AI Infrastructure:** distributed inference across heterogeneous fleets, pipeline parallelism, WebGPU inference, quantized serving (GGUF), vLLM, llama.cpp, exo, Ollama, OpenAI-compatible API design, LLM tool-use in production, MCP, multi-agent engineering workflows
+- **Financial Systems:** Stripe Connect (onboarding, escrow, split payouts, webhooks), credit ledger design (integer base units, supply caps, halving), payment channels and off-chain settlement, usage metering and admission control, multi-currency pricing
 - **Backend:** Axum, Tokio, Node.js, REST/WebSockets, microservices, Redis Streams, PostgreSQL, Supabase
-- **Frontend:** SvelteKit, React/React 19, React Native (Expo), TanStack Start, Astro, Dominator, Electron, Tailwind CSS
-- **Distributed Systems:** libp2p, PoW blockchain, Raft consensus, gossip protocols, zero-copy IPC (rkyv), Ed25519 identity, NAT traversal
+- **Frontend:** SvelteKit, React/React 19, React Native (Expo), TanStack Start, Astro, Electron, Tailwind CSS
 - **Graphics:** wgpu, WGSL shaders, SDF/ray-marching, voxel traversal, ECS (hecs), TAA, bloom, render graphs
-- **AI / Agents:** MCP (Model Context Protocol), Claude & Gemini APIs, LLM tool-use, Chromium/Electron automation
-- **Infrastructure:** Docker, gVisor, Cloudflare (Workers, Pages, Tunnels, R2), Hetzner, Railway, GitHub Actions, blue-green deploys, package distribution (Homebrew, AUR, Scoop, Chocolatey)
-- **Testing:** TDD, property-based testing, Playwright/Vitest E2E, pgTAP, integration testing
+- **Infrastructure & Ops:** Cloudflare (Workers, Pages, Tunnels, R2, DNS), Hetzner, Docker, gVisor, systemd fleets, blue-green deploys, deploy smoke gates, fail-independent monitoring, GitHub Actions, cross-platform release CI, package distribution (Homebrew, AUR, Scoop, Chocolatey)
+- **Testing:** TDD, property-based testing, reproduce-first bug methodology, Playwright/Vitest E2E, pgTAP, live multi-node e2e harnesses
 
 ---
 

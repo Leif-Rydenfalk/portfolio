@@ -16,23 +16,23 @@ const NAME = 'Leif Adamec Rydenfalk';
 function generateTitle(section: string): string {
 	switch (section) {
 		case 'About':
-			return `About | ${NAME} — Systems & Full-Stack Engineer`;
+			return `About | ${NAME} — Systems Engineer & Founder`;
 		case 'Skills':
-			return `Skills: Rust, TypeScript, Distributed Systems | ${NAME}`;
+			return `Skills: Rust, Distributed Systems, LLM Infrastructure | ${NAME}`;
 		case 'Experience':
 			return `Experience | ${NAME}`;
 		case 'Projects':
-			return `Projects: Rheo, Myra/Trana, Cell | ${NAME}`;
+			return `Projects: CE, Rheo, Myra/Trana, LLM Inference | ${NAME}`;
 		case 'Contact':
 			return `Contact | ${NAME}`;
 		case 'Home':
 		default:
-			return `${NAME} — Systems & Full-Stack Engineer, Founder`;
+			return `${NAME} — Systems Engineer & Founder`;
 	}
 }
 
 $: pageTitle = generateTitle(currentSection);
-let metaDescription = `Leif Adamec Rydenfalk — systems & full-stack software engineer and founder in Umeå, Sweden. Founder of the Rheo resale marketplace (Rust) and the Myra/Trana AI EdTech SaaS. Deep Rust experience across distributed systems, real-time graphics, and AI agent tooling (MCP). Explore projects, skills, and experience.`;
+let metaDescription = `Leif Adamec Rydenfalk — systems engineer and founder in Umeå, Sweden. Builds and operates the CE peer-to-peer compute mesh and economy (ce-net.com), the Rheo resale marketplace (Rust, Stripe Connect), the Myra/Trana AI EdTech SaaS, and distributed LLM inference across heterogeneous machines. Deep Rust and TypeScript across distributed systems, financial infrastructure, and AI integration.`;
 
 // Structured data (schema.org Person) — the canonical, truthful description of
 // who Leif is for search engines. Links the name to his ventures and profiles.
@@ -43,9 +43,9 @@ const personJsonLd = {
 	alternateName: ['Leif Rydenfalk', 'Leif Adamec'],
 	url: 'https://adamec.me',
 	image: 'https://adamec.me/mac_screenshot.webp',
-	jobTitle: 'Software Engineer & Founder',
+	jobTitle: 'Systems Engineer & Founder',
 	description:
-		'Systems and full-stack software engineer and founder specializing in Rust, distributed systems, real-time graphics, and AI agent tooling.',
+		'Systems engineer and founder specializing in distributed compute infrastructure, LLM inference systems, marketplaces and payment platforms, and AI-integrated production software.',
 	email: 'mailto:ledamecrydenfalk@gmail.com',
 	address: {
 		'@type': 'PostalAddress',
@@ -55,6 +55,13 @@ const personJsonLd = {
 	},
 	worksFor: { '@type': 'Organization', name: 'Rydenfalk Systems' },
 	founder: [
+		{
+			'@type': 'Organization',
+			name: 'CE / ce-net',
+			url: 'https://ce-net.com',
+			description:
+				'Peer-to-peer compute mesh and economy — donated machines, capability security, credit ledger, 70+ services.'
+		},
 		{
 			'@type': 'Organization',
 			name: 'Rheo',
@@ -72,11 +79,13 @@ const personJsonLd = {
 		'Rust',
 		'TypeScript',
 		'Distributed Systems',
+		'LLM Inference',
 		'Peer-to-peer Networking',
+		'Payment Systems',
+		'Marketplace Platforms',
+		'Capability Security',
 		'Real-time Graphics',
-		'wgpu',
 		'WebGPU',
-		'Game Engine Development',
 		'AI Agents',
 		'Model Context Protocol',
 		'Full-Stack Web Development'

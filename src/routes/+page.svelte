@@ -144,7 +144,9 @@
 			location: "Umeå, Västerbotten County, Sweden",
 			description: [
 				"Designed and built Myra / Trana (trana.app) solo — an AI lesson-material SaaS for Swedish teachers. One TypeScript monorepo ships web (TanStack Start + React 19 on Cloudflare Workers), landing (Astro), mobile (Expo), and desktop (Electron) from shared packages, on a Supabase backend with RLS.",
-				"Built Cell — a biologically-inspired distributed substrate in Rust with zero-copy rkyv messaging at 1.48M msg/s (~677ns RTT, single core) and embeddable Raft. Underpins CE, a P2P compute economy (libp2p, PoW credit ledger, gVisor sandboxing) packaged for Homebrew, AUR, Scoop, and Chocolatey.",
+				"Built and operate CE (ce-net.com) — a peer-to-peer compute mesh and economy: run a node, donate compute, earn credits, spend them on other machines. Ed25519 identity, signed capability chains as the only trust primitive, a PoW credit ledger with escrow and payment channels, and gVisor-sandboxed workloads. The paid compute economy runs live across a multi-machine fleet (Hetzner relay, GPU workstation, laptops, browser nodes).",
+				"Built 70+ services on top of CE rebuilding Google-class infrastructure as mesh apps — object storage (S3-class), a Firestore-class realtime document DB, GKE-style container orchestration, pub/sub, CDN, serverless functions, IAM with device pairing, and distributed CI. Grew from Cell, a zero-copy Rust substrate sustaining 1.48M msg/s (~677ns RTT, single core) with embeddable Raft.",
+				"Run large language models distributed across heterogeneous machines: ce-exo wraps production engines (vLLM, llama.cpp, exo, Ollama) behind one OpenAI-compatible API over the NAT-traversing mesh with capability-gated access; ce-tabnet shards a transformer layer-by-layer across browser tabs — pipeline-parallel WebGPU inference.",
 				"Designed OpenJaws cell-mesh platform: TypeScript/Rust runtime where self-discovering 'cells' gossip-sync a shared atlas and expose 100% type-safe capabilities with zero service-mesh configuration.",
 				"Shipped Blueberry Browser — Electron app exposing an MCP server so AI agents operate a real, logged-in Chromium session like a human. Automates Gmail, WhatsApp Web, and LinkedIn daily with no per-site integrations.",
 				"Built a Rust/wgpu voxel game engine (ECS via hecs, hot-reloaded WGSL, SDF-voxel traversal, TAA, bloom) at 60 FPS on Apple A15/M1.",
@@ -163,6 +165,12 @@
 				"Docker/gVisor",
 				"MCP",
 				"wgpu",
+				"Distributed LLM Inference",
+				"vLLM / llama.cpp",
+				"WebGPU",
+				"PoW Ledger & Payment Channels",
+				"Capability Security",
+				"Hetzner / Cloudflare",
 			],
 		},
 		{
@@ -230,20 +238,37 @@
 			imageUrl: "",
 		},
 		{
-			title: "Cell / CE — Distributed Compute Substrate",
+			title: "CE / ce-net — Compute Mesh & Economy",
 			description:
-				"A biologically-inspired distributed computing substrate in Rust — sandboxed 'cells' exchange zero-copy, rkyv-archived messages over Unix sockets at 1.48M msg/s (~677ns median RTT, single core), with embeddable Raft consensus and #[protein] codegen macros. It underpins CE, a peer-to-peer compute economy: nodes donate compute, earn credits, and spend them on workloads via libp2p, a custom PoW credit ledger, and gVisor sandboxing. Public relay at ce-net.com; packaged for Homebrew, AUR, Scoop, and Chocolatey.",
+				"A peer-to-peer compute mesh and economy: run a node, donate compute, earn credits, spend them on other people's machines. Every node is assumed hostile — Ed25519 identity, signed capability chains as the only trust primitive, a PoW credit ledger with escrow and payment channels, gVisor-sandboxed workloads. 70+ services on top rebuild Google-class infrastructure as mesh apps: object storage, realtime document DB, container orchestration, pub/sub, CDN, serverless functions, IAM, distributed CI. The paid economy is live across a multi-machine fleet; public relay at ce-net.com; installers for Homebrew, AUR, Scoop, and Chocolatey. Grew out of Cell, a zero-copy Rust substrate (1.48M msg/s, ~677ns RTT, embeddable Raft).",
 			tech: [
 				"Rust",
-				"rkyv (zero-copy)",
-				"Raft",
 				"libp2p",
 				"PoW Ledger",
+				"Payment Channels",
+				"Capability Security",
 				"gVisor",
 				"Ed25519",
-				"Tokio",
+				"Kademlia / Gossipsub",
 			],
-			link: "https://github.com/Leif-Rydenfalk/cell",
+			link: "https://ce-net.com",
+			imageUrl: "",
+		},
+		{
+			title: "ce-exo + ce-tabnet — Distributed LLM Inference",
+			description:
+				"Large-model inference across machines that were never meant to cooperate. ce-exo serves LLMs over a heterogeneous fleet by wrapping production engines — vLLM, llama.cpp, exo, Ollama — behind one OpenAI-compatible API, with NAT-traversing mesh transport and capability-gated access: one command deploys an engine to a GPU box and routes chat traffic to it from anywhere. ce-tabnet shards a transformer layer-by-layer across browser tabs — pipeline-parallel WebGPU inference where each tab holds a slice of the model. Also designed a clinical deployment (staff chat on hospital GPUs, PHI never leaves the LAN).",
+			tech: [
+				"vLLM",
+				"llama.cpp",
+				"exo",
+				"WebGPU",
+				"Pipeline Parallelism",
+				"Quantized Models",
+				"OpenAI-compatible API",
+				"Rust",
+			],
+			link: "https://github.com/ce-net/ce-exo",
 			imageUrl: "",
 		},
 		{
@@ -292,6 +317,22 @@
 				"Hot-reload",
 			],
 			link: "https://github.com/Leif-Rydenfalk/game-engine",
+			imageUrl: "",
+		},
+		{
+			title: "Spacegame — Players Are the Servers",
+			description:
+				"A browser multiplayer space arena with no game server: every player's browser runs the full authoritative simulation in-tab (Rust → WASM + WebGL2) and peers merge state by quorum — replicated authority instead of client-server. Zero-delay prediction, per-RTT update rates, and population-driven persistence: a lone player's world resets, a crowd's world survives because the crowd is hosting it. The relay is just transport and a warm seed. Deploys are gated on a live browser smoke test of the real production path.",
+			tech: [
+				"Rust",
+				"WASM",
+				"WebGL2",
+				"Replicated Authority",
+				"Quorum Merge",
+				"libp2p",
+				"Client Prediction",
+			],
+			link: "https://github.com/ce-net/spacegame",
 			imageUrl: "",
 		},
 		{
@@ -436,9 +477,10 @@
 					items: [
 						"libp2p (Gossip, DHT, NAT traversal)",
 						"PoW Blockchain Design",
-						"Gossip Protocol",
-						"Circuit Relay",
+						"Capability Chains (attenuation, revocation)",
+						"Circuit Relay & Hole Punching",
 						"Ed25519 Identity & Signing",
+						"Zero-copy / Shared-memory Transports",
 					],
 				},
 				cellMesh: {
@@ -459,8 +501,75 @@
 						"Model Context Protocol (MCP)",
 						"Electron / Chromium Automation",
 						"Claude API Integration",
-						"n8n / Cron Orchestration",
+						"Multi-agent Development Workflows",
 						"Browser-based Agent Runtimes",
+					],
+				},
+			},
+		},
+		llmInfrastructure: {
+			domainTitle: "LLM Inference & AI Infrastructure",
+			icon: "brain",
+			categories: {
+				distributedInference: {
+					title: "Distributed Inference",
+					color: "blue-600",
+					items: [
+						"LLM Serving Across Heterogeneous Fleets",
+						"Pipeline Parallelism (layer sharding)",
+						"WebGPU In-browser Inference",
+						"Quantized Models (GGUF)",
+						"OpenAI-compatible API Design",
+					],
+				},
+				engines: {
+					title: "Engines & Runtimes",
+					color: "cyan-600",
+					items: [
+						"vLLM",
+						"llama.cpp",
+						"exo",
+						"Ollama",
+						"GPU Node Orchestration",
+					],
+				},
+				productionAI: {
+					title: "AI in Production",
+					color: "emerald-600",
+					items: [
+						"LLM Tool-Use in Production Systems",
+						"AI Policy / Content Scanning",
+						"Generation Pipelines (EdTech SaaS)",
+						"Clinical / On-prem Inference Design",
+						"AI-agent-driven Engineering Process",
+					],
+				},
+			},
+		},
+		financialSystems: {
+			domainTitle: "Marketplaces & Financial Systems",
+			icon: "bank",
+			categories: {
+				payments: {
+					title: "Payments & Marketplace",
+					color: "green-600",
+					items: [
+						"Stripe Connect (onboarding, split payouts)",
+						"Escrow & Webhook-driven Settlement",
+						"Multi-currency (anchor-currency design)",
+						"PCI-sensitive Flow Handling",
+						"Offer / Negotiation Systems",
+					],
+				},
+				ledgers: {
+					title: "Ledgers & Credit Economies",
+					color: "amber-600",
+					items: [
+						"Credit Ledger Design (integer base units, supply caps)",
+						"Payment Channels & Off-chain Receipts",
+						"Usage Metering & Admission Control",
+						"Escrowed Job Settlement (bid/settle/expire)",
+						"Trust & Reputation Economics (earned/spent)",
 					],
 				},
 			},
@@ -474,11 +583,11 @@
 					color: "indigo-600",
 					items: [
 						"AWS (EC2, S3, Lambda, RDS)",
-						"Cloudflare (Tunnels, Pages)",
-						"Hetzner Cloud",
-						"Docker",
-						"Containerization",
-						"Infrastructure Management",
+						"Cloudflare (Workers, Pages, Tunnels, R2, DNS)",
+						"Hetzner Cloud (provisioning API)",
+						"Docker / gVisor",
+						"Multi-machine Fleet Operations",
+						"Cross-platform Release CI (Linux, macOS, Windows)",
 					],
 				},
 				toolsPractices: {
@@ -561,7 +670,7 @@
 
 			<Show delay={1.2} timing="smooth">
 				<Text
-					text="Systems & Full-Stack Engineer • Distributed Systems • Real-Time Graphics"
+					text="Systems Engineer & Founder • Distributed Infrastructure • AI Systems • Marketplaces & Payments"
 					size="lg"
 					tracking="wide"
 					color="secondary"
@@ -633,12 +742,24 @@
 						</li>
 						<li>
 							<Text tag="span" size="md">
-								Built Cell — a biologically-inspired distributed
-								substrate in Rust: zero-copy messaging at 1.48M
-								msg/s (~677ns RTT, single core) with embeddable Raft.
-								Underpins CE, a P2P compute economy (libp2p, PoW
-								ledger, gVisor) packaged for Homebrew, AUR, Scoop,
-								and Chocolatey.
+								Built and operate CE (ce-net.com) — a peer-to-peer
+								compute mesh and economy: capability-chain security,
+								a PoW credit ledger with payment channels, gVisor
+								sandboxing, and 70+ services on top rebuilding
+								Google-class infrastructure (object storage, realtime
+								DB, container orchestration, pub/sub, CDN, IAM). The
+								paid compute economy runs live across a
+								multi-machine fleet.
+							</Text>
+						</li>
+						<li>
+							<Text tag="span" size="md">
+								Run large language models distributed across
+								heterogeneous machines: ce-exo serves models by
+								wrapping vLLM / llama.cpp / exo behind one
+								OpenAI-compatible API over the mesh; ce-tabnet runs
+								pipeline-parallel WebGPU inference sharded across
+								browser tabs.
 							</Text>
 						</li>
 						<li>
@@ -683,12 +804,25 @@
 						<Text tag="p" color="gray-700" size="md" class="mb-3">
 							Built CE ('Sea') — a peer-to-peer compute mesh and
 							economy where every node is assumed hostile and the
-							honest majority wins. Implemented libp2p networking
-							with NAT traversal, a custom PoW blockchain for
-							credit accounting, and Docker/gVisor sandboxing for
-							secure workload execution. Deployed a public relay
-							on Hetzner (ce-net.com); packaged for Homebrew, AUR,
-							Scoop, and Chocolatey.
+							honest majority wins. libp2p networking with NAT
+							traversal, signed capability chains as the only trust
+							primitive, a custom PoW ledger with escrow and payment
+							channels, and Docker/gVisor sandboxing for workload
+							execution. The paid compute economy is live: usage is
+							metered, admitted, and settled on-chain across a
+							multi-machine fleet (Hetzner relay, GPU workstation,
+							laptops, in-browser WASM nodes). Public relay at
+							ce-net.com; packaged for Homebrew, AUR, Scoop, and
+							Chocolatey.
+						</Text>
+						<Text tag="p" color="gray-700" size="md" class="mb-3">
+							On those primitives: 70+ services rebuilding
+							Google-class infrastructure as mesh apps — S3-class
+							object storage, a Firestore-class realtime document
+							DB, GKE-style container orchestration, pub/sub, CDN,
+							serverless functions, IAM with passwordless device
+							pairing, distributed CI, and an ngrok-style tunnel
+							service.
 						</Text>
 						<Text tag="p" color="gray-700" size="md">
 							Designed the OpenJaws cell mesh platform and its
@@ -697,6 +831,45 @@
 							gossip-sync a shared atlas and expose type-safe
 							capabilities with no bespoke service-mesh
 							configuration.
+						</Text>
+					</div>
+				</Show>
+
+				<hr class="border-gray-300 dark:border-gray-600" />
+
+				<Show delay={0.3} timing="smooth" preset="scale">
+					<div>
+						<Text
+							tag="h3"
+							size="md_header"
+							color="primary"
+							class="mb-3"
+						>
+							LLM Inference & AI Infrastructure
+						</Text>
+						<Text tag="p" color="gray-700" size="md" class="mb-3">
+							Serve large language models across machines that were
+							never meant to cooperate. ce-exo distributes models
+							over a heterogeneous fleet by wrapping production
+							engines — vLLM, llama.cpp, exo, Ollama — behind one
+							OpenAI-compatible API, with NAT-traversing mesh
+							transport and capability-gated access: one command
+							deploys an engine to a GPU machine and routes chat
+							traffic to it from anywhere. ce-tabnet takes the same
+							idea to its extreme — a transformer sharded
+							layer-by-layer across browser tabs, pipeline-parallel
+							inference on WebGPU.
+						</Text>
+						<Text tag="p" color="gray-700" size="md">
+							LLMs also run inside my production systems: policy
+							analysis over payroll data at a gaming studio (LLM
+							tool-use in Rust), lesson-material generation in
+							Trana, and an AI-policy pre-run scanner for work
+							admitted to the compute mesh. Day to day, the
+							engineering process itself runs on fleets of parallel
+							AI agents with recorded conventions and shared
+							backlogs — 500k+ lines of production Rust and
+							TypeScript shipped solo in the last 12 months.
 						</Text>
 					</div>
 				</Show>
@@ -1053,12 +1226,14 @@
 					class="flex items-center justify-center text-center p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
 				>
 					<Text color="gray-500" size="sm">
-						More on GitHub: Dream Engine (real-time biologically-inspired
-						neuron/learning sim, 90 FPS on a GTX 1060), Mariana
-						(zero-dependency streaming LLM reasoning console), CaptureFlow
-						(production AI assistant with web + Telegram), a chess engine,
-						and a deep back-catalog of graphics and simulation experiments
-						in Rust and C++.
+						More on GitHub: the ce-net org (70+ repos — the mesh, SDKs,
+						and every service on it), Cerena (a 10k-player distributed
+						RPG in progress), ce-cast (distributed live-streaming studio
+						where a relay node does the encoding), Dream Engine
+						(real-time biologically-inspired neuron/learning sim, 90 FPS
+						on a GTX 1060), Mariana (zero-dependency streaming LLM
+						reasoning console), and a deep back-catalog of graphics and
+						simulation experiments in Rust and C++.
 					</Text>
 				</div>
 			</div>
@@ -1077,8 +1252,10 @@
 			<Show delay={0.2} timing="smooth" preset="scale">
 				<div class="mt-8 space-y-4">
 					<Text tag="p" color="gray-700" size="md">
-						Open to opportunities in systems engineering, full-stack
-						development, and performance optimization.
+						Open to senior technical leadership — CTO, founding
+						engineer — and deep systems work: distributed
+						infrastructure, AI systems, marketplaces, and financial
+						platforms.
 					</Text>
 				</div>
 
