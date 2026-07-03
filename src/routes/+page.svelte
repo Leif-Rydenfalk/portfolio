@@ -657,7 +657,7 @@
 		<div
 			class="flex flex-col justify-center items-center text-center h-auto"
 		>
-			<Show delay={1.0} timing="smooth">
+			<Show delay={0.15} timing="smooth">
 				<Text
 					text="Leif Adamec Rydenfalk"
 					size="xl_title"
@@ -668,12 +668,23 @@
 
 			<div class="h-8"></div>
 
-			<Show delay={1.2} timing="smooth">
+			<Show delay={0.3} timing="smooth">
 				<Text
 					text="Systems Engineer & Founder • Distributed Infrastructure • AI Systems • Marketplaces & Payments"
 					size="lg"
 					tracking="wide"
 					color="secondary"
+				/>
+			</Show>
+
+			<div class="h-5"></div>
+
+			<Show delay={0.45} timing="smooth">
+				<Text
+					text="Building infrastructure for our next society."
+					size="sm"
+					tracking="wide"
+					color="gray-500"
 				/>
 			</Show>
 
@@ -686,7 +697,7 @@
 					}}
 				>
 					<div class="flex flex-col items-center justify-center">
-						<Show delay={2.0} timing="smooth">
+						<Show delay={0.7} timing="smooth">
 							<Text
 								text="View profile"
 								size="sm"
@@ -694,7 +705,7 @@
 								color="secondary"
 							/>
 						</Show>
-						<Show delay={2.4} timing="smooth">
+						<Show delay={0.8} timing="smooth">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								width="3rem"

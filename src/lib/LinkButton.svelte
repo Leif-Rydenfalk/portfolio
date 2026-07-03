@@ -24,7 +24,7 @@
 					{
 						easing: spring({
 							stiffness: 200,
-							damping: 5,
+							damping: 24,
 							mass: 0.9,
 
 							restDistance: 0.005,
@@ -42,7 +42,7 @@
 					{
 						easing: spring({
 							stiffness: 300,
-							damping: 4,
+							damping: 26,
 							mass: 0.8,
 
 							restDistance: 0.005,
@@ -60,7 +60,7 @@
 					{
 						easing: spring({
 							stiffness: 400,
-							damping: 4,
+							damping: 28,
 							mass: 0.7,
 							restDistance: 0.005,
 							restSpeed: 0.005

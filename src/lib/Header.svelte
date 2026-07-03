@@ -51,8 +51,8 @@ function update_expanded() {
 				{ height: [`${expanded_element.offsetHeight}px`] },
 				{
 					easing: spring({
-						stiffness: 100,
-						damping: 8,
+						stiffness: 120,
+						damping: 20,
 						mass: 0.5,
 						restDistance: 0.005,
 						restSpeed: 0.005
@@ -67,8 +67,8 @@ function update_expanded() {
 				{ y: [`100px`, `0px`], opacity: [1] },
 				{
 					easing: spring({
-						stiffness: 100,
-						damping: 8,
+						stiffness: 120,
+						damping: 20,
 						mass: 0.5,
 						restDistance: 0.005,
 						restSpeed: 0.005

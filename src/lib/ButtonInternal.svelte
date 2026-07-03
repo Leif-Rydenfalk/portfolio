@@ -16,18 +16,18 @@ let events = [];
 onMount(() => {
 	if (!element) return;
 	let timing_parameters = {
-		stiffness: 140,
-		damping: 15.0,
-		mass: 1.4
+		stiffness: 170,
+		damping: 26,
+		mass: 1
 	};
 
 	inView(element, async () => {
 		if (element) {
-			let randomDelay = Math.random() * 0.2;
+			let randomDelay = Math.random() * 0.05;
 
 			animate(
 				element,
-				{ scale: [0.0, 1.0], opacity: [0.0, 1.0] },
+				{ scale: [0.97, 1.0], opacity: [0.0, 1.0] },
 				{
 					easing: spring({
 						stiffness: timing_parameters.stiffness,
@@ -71,7 +71,7 @@ onMount(() => {
 
 		animate(
 			element,
-			{ scale: [enterScale, normalScale], opacity: [0.6] },
+			{ scale: [enterScale, normalScale], opacity: [0.92] },
 			{
 				easing: spring({
 					stiffness: timing_parameters.stiffness,

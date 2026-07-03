@@ -7,28 +7,24 @@ export let delay = 0;
 export let preset = 'default';
 export let timing = 'default';
 
-let randomDelay = Math.random() * 0.1;
+let randomDelay = Math.random() * 0.04;
 
 let element;
 onMount(() => {
 	if (!element) return;
 
+	// Toned down: small offsets and near-critically-damped springs —
+	// content settles quickly with no wobble or overshoot.
 	let preset_parameters = {
-		default: { scale: [0.7, 1], x: [30, 0], y: [10, 0] },
-		skew: {
-			scale: [0.7, 1],
-			skewX: [-10, 0],
-			skewY: [10, 0],
-			x: [30, 0],
-			y: [10, 0]
-		},
-		scale: { scale: [0.7, 1] },
-		slide: { x: [30, 0] }
+		default: { scale: [0.985, 1], y: [10, 0] },
+		skew: { scale: [0.985, 1], y: [10, 0] },
+		scale: { scale: [0.985, 1], y: [8, 0] },
+		slide: { x: [12, 0] }
 	}[preset];
 
 	let timing_parameters = {
-		default: { stiffness: 200, damping: 5, mass: 0.9 },
-		smooth: { stiffness: 20, damping: 3, mass: 0.1 }
+		default: { stiffness: 170, damping: 26, mass: 1 },
+		smooth: { stiffness: 120, damping: 22, mass: 1 }
 	}[timing];
 
 	inView(element, async () => {
@@ -64,9 +60,9 @@ onMount(() => {
 					{ opacity: [1] },
 					{
 						easing: spring({
-							stiffness: 300,
-							damping: 7,
-							mass: 0.2,
+							stiffness: 170,
+							damping: 26,
+							mass: 1,
 							restDistance: 0.005,
 							restSpeed: 0.005
 						}),

@@ -8,26 +8,28 @@
 	let logo;
 
 	onMount(() => {
+		// Calm entrance: a short settle instead of the old bounce, and the
+		// overlay gets out of the way faster.
 		animate(
 			logo,
-			{ opacity: [0, 1], y: [-80, 0] },
+			{ opacity: [0, 1], y: [-16, 0] },
 			{
 				delay: 0.0,
 				easing: spring({
-					stiffness: 400,
-					damping: 17,
+					stiffness: 220,
+					damping: 28,
 					restDistance: 0.005,
 					restSpeed: 0.005
 				})
 			}
 		);
 
-		animate(div, { opacity: [0] }, { delay: 0.3, duration: 0.5 });
+		animate(div, { opacity: [0] }, { delay: 0.25, duration: 0.35 });
 
 		// remove the div from the DOM once the animation is complete
 		setTimeout(async () => {
 			div.remove();
-		}, 800);
+		}, 600);
 	});
 </script>
 
