@@ -688,6 +688,17 @@
 				/>
 			</Show>
 
+			<div class="h-3"></div>
+
+			<Show delay={0.55} timing="smooth">
+				<a
+					href="/roadmap"
+					class="text-blue-600 dark:text-blue-400 text-[0.9rem] tracking-wide underline underline-offset-4 decoration-blue-300 hover:decoration-blue-600 transition-colors"
+				>
+					Read the roadmap
+				</a>
+			</Show>
+
 			<div class="h-8"></div>
 
 			<div class="h-auto flex flex-col items-center justify-center">

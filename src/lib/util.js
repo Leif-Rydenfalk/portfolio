@@ -15,7 +15,9 @@ export function scrollToSection(event, sectionId) {
       block: 'start'      // Align top of section with top of viewport
     });
   } else {
-    console.warn(`Scroll target not found: #${sectionId}`);
+    // Not on this page (e.g. navigating from /roadmap) — go home and
+    // let the browser anchor to the section.
+    window.location.href = `/#${sectionId}`;
   }
 }
 

@@ -53,10 +53,23 @@ export let set_tab = () => {};
 				delay={0.4}
 				onClick={(e) => {
 					set_tab('');
-					scrollToSection(e, 'skills-overview-section');
+					scrollToSection(e, 'skills-programmingLanguages-section');
 				}}
 			>
 				<Text timing={{ delay: 0.5 }} text="Skills" size="md" />
+			</Button>
+		</Show>
+	</div>
+	<div class="h-[3rem]">
+		<Show timing="smooth">
+			<Button
+				delay={0.45}
+				onClick={() => {
+					set_tab('');
+					window.location.href = '/roadmap';
+				}}
+			>
+				<Text timing={{ delay: 0.55 }} text="Roadmap" size="md" />
 			</Button>
 		</Show>
 	</div>

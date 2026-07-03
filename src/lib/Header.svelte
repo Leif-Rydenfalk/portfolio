@@ -195,12 +195,25 @@ let show = true;
 									style="h-[4.0rem] w-[6.2rem] flex justify-center items-center"
 									delay={0.6}
 									onClick={(e) => {
-										scrollToSection(e, 'skills-overview-section');
+										scrollToSection(e, 'skills-programmingLanguages-section');
 									}}
 								>
 									<Text
 										timing={{ delay: 0.4 }}
 										text="Skills"
+										size="tn_header"
+									/>
+								</Button>
+								<Button
+									style="h-[4.0rem] w-[7.2rem] flex justify-center items-center"
+									delay={0.7}
+									onClick={() => {
+										window.location.href = '/roadmap';
+									}}
+								>
+									<Text
+										timing={{ delay: 0.45 }}
+										text="Roadmap"
 										size="tn_header"
 									/>
 								</Button>
